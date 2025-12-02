@@ -2,79 +2,92 @@
 
 proiect tehnologii web, ase 2025-2026.
 
-hei! aici gasesti tot ce am implementat in faza a 2 a  a proiectului.
+hei! aici gasesti tot ce am implementat la backend. proiectul este acum complet functional pentru faza 2.
 
-## 1. status proiect si livrabil (backend pe jumatate comeplet)
+## 1. status proiect: functional
 
-acest livrabil acopera integral etapele de setup, orm si autentificare.
+am terminat implementarea si am acoperit toate cerintele: setup, orm, autentificare, plus logica pentru profesori si studenti.
 
-###  infrastructura si securitate (sunt ok , trebuie sa mai fac mici modificari sau colega mea o sa mai faca modificari daca crede ca sunt necesare )
+### a. infrastructura si securitate (partea initiala)
+* server: node.js cu express.
+* baza de date: postgresql.
+* orm: sequelize (avem modelele users, activities, feedback, courses).
+* securitate: bcrypt pentru parole si jsonwebtoken (jwt) pentru login.
+* protectie: middleware care verifica token-ul pe rutele private.
 
-* **server:** node.js cu express.
-* **baza de date:** postgresql (bd relationala).
-* **orm:** sequelize. am definit cele 4 modele principale (`users`, `activities`, `feedback`, `courses`) si relatiile dintre ele.
-* **securitate:** am implementat `bcrypt` pentru hash-uirea parolelor si `jsonwebtoken` pentru generarea de token-uri jwt.
-* **api autentificare:** rutele `/register` si `/login` sunt functionale si returneaza un token jwt valid.
-* **protectie:** am adaugat middleware-ul jwt care protejeaza rutele private.
-
-###  obiective ramase (aici este partea colegei mele si desigur o sa intervin si eu daca o sa fie nevoie)
-
-pentru finalizarea partii a 2 a pana la data  de 06.12.2025 (serviciu restful functional), trebuie sa implementam  logica de business principala:
-
-* **pasul 4: rute profesor (rute protejate)**
-    * `get /api/activities` (preluare lista activitati).
-    * `get /api/activities/:id` (preluare feedback asociat).
-* **pasul 5: logica studentului (rute publice)**
-    * `post /api/join` (verificare cod acces si stare activa).
-    * `post /api/feedback` (trimitere reactie anonima in bd).
-* **pasul 6: curatenie**
-    * revizuirea calitatii codului: organizare, `camelcase` si comentarii la logica de business.
+### b. functionalitati noi implementate (partea finala)
+am adaugat logica de business care lipsea data trecuta:
+* profesorii pot crea activitati noi (cu conditia sa existe un curs).
+* profesorii isi pot vedea lista de activitati si feedback-ul primit.
+* studentii se pot alatura cu un cod de acces.
+* studentii pot trimite feedback anonim (smiley, frowny etc).
 
 ---
 
-## 2. instructiuni de rulare
+## 2. instructiuni de instalare si rulare
 
-aceste instructiuni descriu cum se instaleaza si se porneste serviciul restful.
+urmeaza pasii astia ca sa pornesti serverul la tine local.
 
-### a. setup initial
+### pasul 1: prerechizite
+trebuie sa ai node.js si postgresql (pgadmin) instalate.
 
-1.  **prerechizite:** ai nevoie de node.js (v18+) si postgresql (cu pgadmin) instalate si pornite.
-2.  **clonare repository:** `git clone ...`
-3.  **creare bd:** creeaza o baza de date in pgadmin numita `feedback_app`.
+### pasul 2: instalare
+intra in folderul "backend" si scrie in terminal:
+npm install
 
-### b. pornirea serverului
+### pasul 3: configurare baza de date
+1. intra in pgadmin si creeaza o baza de date goala numita "web_feedback_db".
+2. in folderul "backend", creeaza un fisier nou numit ".env" si pune codul de mai jos (schimba parola cu a ta):
 
-1.  **instalare dependente:** naviga in directorul `backend` si ruleaza:
-    ```bash
-    npm install
-    ```
-2.  **variabile de mediu (.env):** creeaza fisierul `.env` in **radacina proiectului** si completeaza-l cu credentiaalele tale locale.
+DB_DIALECT=postgres
+DB_HOST=localhost
+DB_USER=postgres
+DB_PASS=parola_ta_aici
+DB_NAME=web_feedback_db
+PORT=3000
+JWT_SECRET=cheiesecratafeedbacktw
 
-    ```ini
-    db_dialect=postgres
-    db_host=localhost
-    db_user=nume_utilizator_bd
-    db_pass=parola_ta_de_postgresql
-    db_name=web_feedback_db
-    port=3000
-    jwt_secret=cheiesecratafeedbacktw
-    ```
-3.  **start:** serverul va porni, se va conecta la bd si va crea tabelele automat via orm.
-    ```bash
-    npm start
-    ```
+### pasul 4: pornire
+tot in folderul backend, scrie comanda:
+npm start
 
-### c. testarea functionalitatii (dovada de lucru)
+daca apare "conexiune bd stabilita", inseamna ca serverul merge. tabelele se creeaza automat.
 
-foloseste thunder client (sau postman) pentru a verifica implementarea:
+---
 
-1.  **inregistrare profesor:**
-    * metoda: `post`
-    * url: `http://localhost:3000/api/auth/register`
-    * body (json): `{"email": "profesor@ase.ro", "password": "parola"}`
-2.  **obtine token:** la succes, salveaza tokenul jwt primit in raspuns.
-3.  **test ruta protejata:**
-    * metoda: `post`
-    * url: `http://localhost:3000/api/activities`
-    * header: adauga cheia **`x-auth-token`** cu token-ul obtinut la pasul anterior.
-    * *rezultat asteptat:* status **201 created** si un `accesscode` in raspuns.
+## 3. nota importanta (citeste aici daca nu merge crearea activitatii)
+
+ca sa poti testa ruta de creare activitate (POST /api/activities), ai nevoie de un curs in baza de date, pentru ca activitatea este legata de un curs (foreign key).
+
+momentan nu avem interfata sa cream cursuri, asa ca trebuie sa inserezi unul manual.
+deschide pgadmin -> query tool pe baza ta si ruleaza asta:
+
+INSERT INTO "Courses" (name, "userId", "createdAt", "updatedAt") 
+VALUES ('Tehnologii Web', 1, NOW(), NOW());
+
+(nota: comanda asta merge doar dupa ce ti-ai facut un cont de profesor si ai id-ul 1 in tabela users).
+
+---
+
+## 4. testarea functionalitatii (dovada de lucru)
+
+foloseste thunder client (sau postman) pentru a verifica implementarea, exact cum se cerea in ghid:
+
+1. *inregistrare profesor:*
+   * metoda: POST
+   * url: http://localhost:3000/api/auth/register
+   * body (json): {"email": "profesor@ase.ro", "password": "parola"}
+
+2. *obtine token:* * la succes, primesti un token lung in raspuns. copiaza-l!
+
+3. *test ruta protejata (creare activitate):*
+   * metoda: POST
+   * url: http://localhost:3000/api/activities
+   * header: adauga cheia x-auth-token si pune valoarea token-ului copiat anterior.
+   * body (json): {"courseId": 1, "description": "Curs Test", "startDate": "2025-12-06T10:00:00Z", "durationMinutes": 60}
+   * rezultat asteptat: status 201 created si un accessCode in raspuns.
+
+4. *test student (fara token):*
+   * metoda: POST
+   * url: http://localhost:3000/api/join
+   * body (json): {"access_code": "CODUL_PRIMIT_MAI_SUS"}
