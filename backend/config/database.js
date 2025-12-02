@@ -3,7 +3,9 @@ const UserModel = require('../models/User');
 const CourseModel = require('../models/Course'); 
 const ActivityModel = require('../models/Activity'); 
 const FeedbackModel = require('../models/Feedback'); 
-require('dotenv').config({ path: '../.env' }); 
+
+
+require('dotenv').config(); 
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
