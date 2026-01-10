@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../config/database');
 const User = db.User;
 
-// POST /api/auth/register
+
 router.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
     if (!email || !password) return res.status(400).send('Email si parola sunt necesare');
@@ -28,7 +28,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// POST /api/auth/login
+
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).send('Email si parola sunt necesare');

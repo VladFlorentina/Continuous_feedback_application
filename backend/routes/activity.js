@@ -1,50 +1,42 @@
 const express = require('express');
 const router = express.Router();
+const axios = require('axios');
 const db = require('../config/database');
 const Activity = db.Activity;
-const Feedback = db.Feedback; 
-const auth = require('../middleware/auth'); 
+const Feedback = db.Feedback;
+const auth = require('../middleware/auth');
 
-/**
- * Functie auxiliara pentru generarea unui cod unic de acces.
- * Returneaza un string de 6 cifre.
- */
 const generateAccessCode = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
-/**
- * POST /api/activities
- * Descriere: Permite unui profesor autentificat sa creeze o noua activitate.
- * Authorization: Token JWT necesar (middleware 'auth').
- */
-router.post('/', auth, async (req, res) => { 
-    // Extragem ID-ul profesorului din token
-    const professorId = req.user.id; 
+router.post('/', auth, async (req, res) => {
+    const professorId = req.user.id;
     const { courseId, description, startDate, durationMinutes } = req.body;
 
-    // Validare date de intrare
     if (!description || !startDate || !durationMinutes) {
         return res.status(400).send('Date incomplete. Va rugam completati toate campurile.');
     }
 
     try {
-        // Generam cod unic si salvam activitatea
         let accessCode = generateAccessCode();
+        
+        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${accessCode}`;
+
         const newActivity = await Activity.create({
-            professorId, 
-            courseId, 
-            description, 
-            startDate, 
-            durationMinutes, 
+            professorId,
+            courseId,
+            description,
+            startDate,
+            durationMinutes,
             accessCode
         });
 
-        // Returnam obiectul creat
         res.status(201).json({
             id: newActivity.id,
             description: newActivity.description,
-            accessCode: newActivity.accessCode, 
+            accessCode: newActivity.accessCode,
+            qrCode: qrApiUrl,
             message: 'Activitate creata cu succes'
         });
 
@@ -54,17 +46,11 @@ router.post('/', auth, async (req, res) => {
     }
 });
 
-/**
- * GET /api/activities
- * Descriere: Returneaza lista tuturor activitatilor create de profesorul curent.
- * Authorization: Token JWT necesar.
- */
 router.get('/', auth, async (req, res) => {
     try {
-        // Cautam doar activitatile unde professorId este cel al utilizatorului logat
         const activities = await Activity.findAll({
             where: { professorId: req.user.id },
-            order: [['startDate', 'DESC']] // Ordonare descrescatoare dupa data
+            order: [['startDate', 'DESC']]
         });
 
         res.json(activities);
@@ -74,25 +60,19 @@ router.get('/', auth, async (req, res) => {
     }
 });
 
-/**
- * GET /api/activities/:id
- * Descriere: Returneaza detaliile unei activitati specifice si feedback-ul asociat.
- * Authorization: Token JWT necesar.
- */
 router.get('/:id', auth, async (req, res) => {
     const activityId = req.params.id;
 
     try {
-        // Cautam activitatea si includem (JOIN) tabelul de Feedback
         const activity = await Activity.findOne({
             where: { 
                 id: activityId,
-                professorId: req.user.id // Securitate: doar proprietarul vede datele
+                professorId: req.user.id 
             },
             include: [{
                 model: Feedback,
-                as: 'feedback', // Alias definit in model
-                attributes: ['feedbackType', 'createdAt'] // Selectam doar campurile relevante
+                as: 'feedback',
+                attributes: ['feedbackType', 'createdAt']
             }]
         });
 
