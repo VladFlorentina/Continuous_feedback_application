@@ -8,11 +8,16 @@ module.exports = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true, 
+      unique: true,
     },
-    password: { 
+    password: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    role: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'professor'
     },
     name: {
       type: DataTypes.STRING,
@@ -20,17 +25,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     tableName: 'Users',
-    timestamps: true    
+    timestamps: true
   });
 
   User.associate = (models) => {
     User.hasMany(models.Course, {
-        foreignKey: 'userId',
-        as: 'courses'
+      foreignKey: 'userId',
+      as: 'courses'
     });
     User.hasMany(models.Activity, {
-        foreignKey: 'professorId',
-        as: 'activities'
+      foreignKey: 'professorId',
+      as: 'activities'
     });
   };
 

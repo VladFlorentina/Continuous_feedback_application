@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../config/database');
 const User = db.User;
@@ -35,18 +35,18 @@ router.post('/login', async (req, res) => {
 
     try {
         const user = await User.findOne({ where: { email } });
-        if (!user) return res.status(401).send('Credetiale invalide');
+        if (!user) return res.status(401).send('Credentiale invalide');
 
         const passwordMatch = await bcrypt.compare(password, user.password);
-        if (!passwordMatch) return res.status(401).send('Credetiale invalide');
+        if (!passwordMatch) return res.status(401).send('Credentiale invalide');
 
         const token = jwt.sign(
-            { id: user.id }, 
+            { id: user.id, role: user.role },
             process.env.JWT_SECRET,
             { expiresIn: '1d' }
         );
 
-        res.status(200).json({ token: token, id: user.id, email: user.email, name: user.name });
+        res.status(200).json({ token: token, id: user.id, email: user.email, name: user.name, role: user.role });
 
     } catch (error) {
         res.status(500).send('Eroare server');

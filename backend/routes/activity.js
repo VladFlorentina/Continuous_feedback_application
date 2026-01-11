@@ -20,7 +20,7 @@ router.post('/', auth, async (req, res) => {
 
     try {
         let accessCode = generateAccessCode();
-        
+
         const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${accessCode}`;
 
         const newActivity = await Activity.create({
@@ -65,9 +65,9 @@ router.get('/:id', auth, async (req, res) => {
 
     try {
         const activity = await Activity.findOne({
-            where: { 
+            where: {
                 id: activityId,
-                professorId: req.user.id 
+                professorId: req.user.id
             },
             include: [{
                 model: Feedback,

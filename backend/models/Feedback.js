@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
-    feedbackType: { // smiley, frowny, confused, surprised
+    feedbackType: {
       type: DataTypes.STRING,
       allowNull: false,
     }

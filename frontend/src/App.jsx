@@ -6,6 +6,7 @@ import CreateActivity from './pages/CreateActivity';
 import ActivityDetails from './pages/ActivityDetails';
 import StudentJoin from './pages/StudentJoin';
 import StudentFeedback from './pages/StudentFeedback';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
@@ -14,11 +15,12 @@ function App() {
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        
+
         <Route path="/dashboard" element={<ProfessorDashboard />} />
+        <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/create-activity" element={<CreateActivity />} />
         <Route path="/activity/:id" element={<ActivityDetails />} />
-        
+
         <Route path="/join" element={<StudentJoin />} />
         <Route path="/feedback" element={<StudentFeedback />} />
       </Routes>

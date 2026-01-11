@@ -14,7 +14,6 @@ const CreateActivity = () => {
     try {
       const startDate = new Date();
       const response = await api.post('/activities', {
-        courseId: 1,
         description,
         startDate,
         durationMinutes: duration

@@ -15,12 +15,12 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     startDate: {
-        type: DataTypes.DATE,
-        allowNull: false
+      type: DataTypes.DATE,
+      allowNull: false
     },
     durationMinutes: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, {
     tableName: 'Activities',

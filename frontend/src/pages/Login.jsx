@@ -12,7 +12,11 @@ const Login = () => {
         try {
             const response = await api.post('/auth/login', { email, password });
             localStorage.setItem('token', response.data.token);
-            navigate('/dashboard');
+            if (response.data.role === 'admin') {
+                navigate('/admin');
+            } else {
+                navigate('/dashboard');
+            }
         } catch (error) {
             alert('Email sau parola gresite');
         }
