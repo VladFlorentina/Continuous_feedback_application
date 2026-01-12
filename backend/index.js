@@ -9,6 +9,7 @@ const adminRoutes = require('./routes/admin');
 require('dotenv').config();
 
 
+// Initializarea aplicatiei Express si a serverului HTTP
 const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
@@ -33,7 +34,7 @@ app.use(cors({
 app.use('/api/auth', authRoutes);
 app.use('/api/activities', activityRoutes);
 app.use('/api', studentRoutes);
-app.use('/api/admin', adminRoutes); 
+app.use('/api/admin', adminRoutes);
 
 app.get('/', (req, res) => {
   res.send('Server functional!');

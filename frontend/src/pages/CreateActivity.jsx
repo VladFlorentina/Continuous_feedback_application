@@ -4,6 +4,8 @@ import { Container, TextField, Button, Typography, Box } from '@mui/material';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 
+// Componenta pentru crearea unei noi activitati de catre profesor
+// Permite definirea descrierii si duratei, si afiseaza codul QR generat
 const CreateActivity = () => {
   const [description, setDescription] = useState('');
   const [duration, setDuration] = useState(60);
