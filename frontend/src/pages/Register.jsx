@@ -6,11 +6,13 @@ import { toast } from 'react-toastify';
 import api from '../services/api';
 
 const Register = () => {
+    // State-uri pentru formularul de inregistrare
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
+    // Functia de inregistrare
     const handleRegister = async () => {
         try {
             await api.post('/auth/register', { name, email, password });
@@ -34,22 +36,25 @@ const Register = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)'
+            background: 'linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)', // Gradient diferit pentru register
+            p: 2
         }}>
             <Container maxWidth="xs">
-                <Paper elevation={3} sx={{
+                <Paper elevation={6} sx={{
                     p: 4,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    borderRadius: 4
+                    borderRadius: 5,
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)'
                 }}>
-                    <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-                        <PersonAddOutlinedIcon />
+                    <Avatar sx={{ m: 1, bgcolor: '#4caf50', width: 56, height: 56 }}>
+                        <PersonAddOutlinedIcon fontSize="large" />
                     </Avatar>
-                    <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
+                    <Typography component="h1" variant="h4" sx={{ mb: 3, fontWeight: 600, color: '#333' }}>
                         Creeaza Cont
                     </Typography>
+
                     <TextField
                         margin="normal"
                         fullWidth
@@ -57,33 +62,52 @@ const Register = () => {
                         autoFocus
                         value={name}
                         onChange={(e) => setName(e.target.value)}
+                        variant="outlined"
+                        sx={{ mb: 2 }}
                     />
                     <TextField
                         margin="normal"
                         fullWidth
-                        label="Email Address"
+                        label="Adresa Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        variant="outlined"
+                        sx={{ mb: 2 }}
                     />
                     <TextField
                         margin="normal"
                         fullWidth
-                        label="Password"
+                        label="Parola"
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        variant="outlined"
+                        sx={{ mb: 3 }}
                     />
+
                     <Button
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 3, mb: 2, height: 48 }}
+                        sx={{
+                            mt: 1,
+                            mb: 2,
+                            height: 50,
+                            fontSize: '1.1rem',
+                            borderRadius: 25,
+                            bgcolor: '#4caf50',
+                            '&:hover': { bgcolor: '#43a047' },
+                            textTransform: 'none'
+                        }}
                         onClick={handleRegister}
                     >
-                        Inregistrare
+                        Inregistreaza-te Acum
                     </Button>
-                    <Link to="/login" style={{ textDecoration: 'none', color: '#1976d2' }}>
-                        Ai deja cont? Login
-                    </Link>
+
+                    <Box sx={{ mt: 2 }}>
+                        <Link to="/login" style={{ textDecoration: 'none', color: '#1976d2', fontWeight: 500 }}>
+                            Ai deja cont? <b>Autentifica-te</b>
+                        </Link>
+                    </Box>
                 </Paper>
             </Container>
         </Box>
