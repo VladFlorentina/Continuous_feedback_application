@@ -30,7 +30,7 @@ services:
         fromService:
           type: web
           name: continuous-feedback-backend
-          property: url
+          property: host
         # Asta va completa automat URL-ul backend-ului, dar trebuie adaugat /api la final manual in Dashboard-ul Render uneori, 
         # sau gestionat in cod. Noi am pus VITE_API_URL ca baza.
         # Render da URL-ul de forma https://backend.onrender.com.

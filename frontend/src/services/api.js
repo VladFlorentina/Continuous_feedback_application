@@ -1,8 +1,17 @@
 import axios from 'axios';
 
+const getBaseUrl = () => {
+    const envUrl = import.meta.env.VITE_API_URL;
+    if (envUrl) {
+        // Dacă Render ne dă doar host-ul (fara https), îl adăugăm noi
+        return envUrl.startsWith('http') ? envUrl : `https://${envUrl}`;
+    }
+    // Fallback pentru local development
+    return `http://${window.location.hostname}:3000/api`;
+};
+
 const api = axios.create({
-    // In productie folosim URL-ul din variabila de mediu, altfel fallback la localhost
-    baseURL: import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3000/api`
+    baseURL: getBaseUrl()
 });
 
 api.interceptors.request.use((config) => {
