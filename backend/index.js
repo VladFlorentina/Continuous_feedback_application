@@ -45,8 +45,6 @@ async function startServer() {
     console.log('Conexiune BD stabilita cu succes.');
     await db.sequelize.sync({ alter: true });
     console.log('Tabele sincronizate.');
-    await db.sequelize.sync({ alter: true });
-    console.log('Tabele sincronizate.');
     server.listen(PORT, '0.0.0.0', () => {
       console.log(`Server ruland pe portul ${PORT} (accesibil din retea)`);
     });

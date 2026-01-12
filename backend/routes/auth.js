@@ -5,11 +5,20 @@ const jwt = require('jsonwebtoken');
 const db = require('../config/database');
 const User = db.User;
 const auth = require('../middleware/auth');
+const { check, validationResult } = require('express-validator');
 
 
-router.post('/register', async (req, res) => {
+router.post('/register', [
+    check('name', 'Numele este obligatoriu').not().isEmpty(),
+    check('email', 'Te rog include un email valid').isEmail(),
+    check('password', 'Parola trebuie sa aiba minim 6 caractere').isLength({ min: 6 })
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const { name, email, password } = req.body;
-    if (!email || !password) return res.status(400).send('Email si parola sunt necesare');
 
     try {
         let user = await User.findOne({ where: { email } });
@@ -30,9 +39,16 @@ router.post('/register', async (req, res) => {
 });
 
 
-router.post('/login', async (req, res) => {
+router.post('/login', [
+    check('email', 'Te rog include un email valid').isEmail(),
+    check('password', 'Parola este obligatorie').exists()
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const { email, password } = req.body;
-    if (!email || !password) return res.status(400).send('Email si parola sunt necesare');
 
     try {
         const user = await User.findOne({ where: { email } });
