@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: `http://${window.location.hostname}:3000/api`
+    // In productie folosim URL-ul din variabila de mediu, altfel fallback la localhost
+    baseURL: import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3000/api`
 });
 
 api.interceptors.request.use((config) => {

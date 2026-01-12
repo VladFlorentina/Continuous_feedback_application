@@ -5,8 +5,16 @@ import AddIcon from '@mui/icons-material/Add';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import LogoutIcon from '@mui/icons-material/Logout';
 import api from '../services/api';
 
+/**
+ * Componenta ProfessorDashboard
+ * 
+ * Panoul de control principal pentru profesor.
+ * Afiseaza lista activitatilor create si permite navigarea catre detaliile acestora.
+ * Include si functionalitatea de delogare.
+ */
 const ProfessorDashboard = () => {
     // Stocarea listei de activitati
     const [activities, setActivities] = useState([]);
@@ -26,60 +34,85 @@ const ProfessorDashboard = () => {
         fetchActivities();
     }, []);
 
-    // Functie pentru delogare (optionala, daca vrem sa o adaugam in header)
+    /**
+     * Sterge datele din localStorage si redirectioneaza catre login.
+     */
     const handleLogout = () => {
         localStorage.clear();
         navigate('/login');
     };
 
     return (
-        <Box sx={{ minHeight: '100vh', backgroundColor: '#f4f6f8', pb: 4 }}>
-            {/* Header-ul paginii */}
+        <Box sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5', pb: 4 }}>
+            {/* Header-ul paginii - Gradient consistent cu ActivityDetails */}
             <Box sx={{
-                background: 'linear-gradient(90deg, #1976d2 0%, #1565c0 100%)',
+                background: 'linear-gradient(135deg, #1e88e5 0%, #1565c0 100%)',
                 color: 'white',
-                p: 4,
-                mb: 4,
-                boxShadow: 2,
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
+                py: 5,
+                px: 3,
+                mb: 5,
+                boxShadow: 3
             }}>
-                <Box>
-                    <Typography variant="h4" fontWeight="bold">
-                        Panou de Control
-                    </Typography>
-                    <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
-                        Bine ai venit, {userName}!
-                    </Typography>
-                </Box>
-                <Button color="inherit" variant="outlined" onClick={handleLogout} sx={{ borderColor: 'rgba(255,255,255,0.5)' }}>
-                    Delogare
-                </Button>
+                <Container maxWidth="lg">
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Box>
+                            <Typography variant="h3" fontWeight="bold" sx={{ mb: 1 }}>
+                                Panou Control
+                            </Typography>
+                            <Typography variant="h6" sx={{ opacity: 0.9, fontWeight: 300 }}>
+                                Bine ai venit, {userName}! Iata cursurile tale.
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', gap: 2 }}>
+                            <Button
+                                variant="contained"
+                                startIcon={<AddIcon />}
+                                onClick={() => navigate('/create-activity')}
+                                sx={{
+                                    bgcolor: 'white',
+                                    color: '#1565c0',
+                                    fontWeight: 'bold',
+                                    '&:hover': { bgcolor: '#f0f0f0' },
+                                    borderRadius: 3,
+                                    px: 3,
+                                    py: 1
+                                }}
+                            >
+                                Activitate Noua
+                            </Button>
+                            <Button
+                                color="inherit"
+                                variant="outlined"
+                                startIcon={<LogoutIcon />}
+                                onClick={handleLogout}
+                                sx={{
+                                    borderColor: 'rgba(255,255,255,0.5)',
+                                    borderRadius: 3,
+                                    '&:hover': { borderColor: 'white', bgcolor: 'rgba(255,255,255,0.1)' }
+                                }}
+                            >
+                                Iesire
+                            </Button>
+                        </Box>
+                    </Box>
+                </Container>
             </Box>
 
             <Container maxWidth="lg">
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                    <Typography variant="h5" color="text.primary" fontWeight="600">
-                        Activitatile Tale
+                <Box sx={{ mb: 3 }}>
+                    <Typography variant="h5" color="text.secondary" fontWeight="600" sx={{ borderLeft: '5px solid #1976d2', pl: 2 }}>
+                        Lista Activitati Recente
                     </Typography>
-                    <Button
-                        variant="contained"
-                        startIcon={<AddIcon />}
-                        onClick={() => navigate('/create-activity')}
-                        sx={{ borderRadius: 20, px: 3, textTransform: 'none', fontSize: '1rem' }}
-                    >
-                        Activitate Noua
-                    </Button>
                 </Box>
 
                 {/* Lista de activitati sub forma de Grid */}
-                <Grid container spacing={3}>
+                <Grid container spacing={4}>
                     {activities.length === 0 ? (
                         <Grid item xs={12}>
-                            <Typography textAlign="center" color="text.secondary" sx={{ py: 5 }}>
-                                Nu ai creat nicio activitate inca. Incepe prin a apasa butoul "Activitate Noua".
-                            </Typography>
+                            <Box sx={{ textAlign: 'center', py: 8, opacity: 0.6 }}>
+                                <Typography variant="h5" gutterBottom>Nu ai nicio activitate activa.</Typography>
+                                <Typography>Apasa pe butonul de sus pentru a crea una.</Typography>
+                            </Box>
                         </Grid>
                     ) : (
                         activities.map((activity) => (
@@ -88,44 +121,55 @@ const ProfessorDashboard = () => {
                                     height: '100%',
                                     display: 'flex',
                                     flexDirection: 'column',
-                                    borderRadius: 3,
-                                    transition: 'transform 0.2s, box-shadow 0.2s',
+                                    borderRadius: 4,
+                                    overflow: 'visible',
+                                    transition: 'all 0.3s ease-in-out',
                                     '&:hover': {
-                                        transform: 'translateY(-4px)',
-                                        boxShadow: 6
+                                        transform: 'translateY(-8px)',
+                                        boxShadow: '0 12px 20px rgba(0,0,0,0.1)'
                                     }
                                 }}>
-                                    <CardContent sx={{ flexGrow: 1 }}>
-                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                                            <Chip label={`Cod: ${activity.accessCode}`} color="primary" variant="outlined" size="small" />
+                                    <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                                            <Chip
+                                                label={`COD: ${activity.accessCode}`}
+                                                sx={{ bgcolor: '#e3f2fd', color: '#1565c0', fontWeight: 'bold' }}
+                                            />
                                         </Box>
-                                        <Typography gutterBottom variant="h6" component="div" fontWeight="bold">
+                                        <Typography gutterBottom variant="h5" component="div" fontWeight="bold" sx={{ color: '#333', mb: 2 }}>
                                             {activity.description}
                                         </Typography>
 
-                                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 2, color: 'text.secondary' }}>
-                                            <CalendarTodayIcon fontSize="small" sx={{ mr: 1 }} />
-                                            <Typography variant="body2">
+                                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 2, color: '#666' }}>
+                                            <CalendarTodayIcon fontSize="small" sx={{ mr: 1, color: '#1976d2' }} />
+                                            <Typography variant="body2" fontWeight="500">
                                                 {new Date(activity.startDate).toLocaleDateString('ro-RO')}
                                             </Typography>
                                         </Box>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, color: 'text.secondary' }}>
-                                            <AccessTimeIcon fontSize="small" sx={{ mr: 1 }} />
-                                            <Typography variant="body2">
+                                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, color: '#666' }}>
+                                            <AccessTimeIcon fontSize="small" sx={{ mr: 1, color: '#1976d2' }} />
+                                            <Typography variant="body2" fontWeight="500">
                                                 {activity.durationMinutes} minute
                                             </Typography>
                                         </Box>
                                     </CardContent>
+
                                     <CardActions sx={{ p: 2, pt: 0 }}>
                                         <Button
-                                            size="small"
                                             variant="contained"
                                             fullWidth
                                             endIcon={<ArrowForwardIcon />}
                                             onClick={() => navigate(`/activity/${activity.id}`)}
-                                            sx={{ borderRadius: 2 }}
+                                            sx={{
+                                                borderRadius: 3,
+                                                textTransform: 'none',
+                                                fontSize: '1rem',
+                                                py: 1,
+                                                background: 'linear-gradient(45deg, #2196f3 30%, #21cbf3 90%)',
+                                                boxShadow: '0 3px 5px 2px rgba(33, 203, 243, .3)'
+                                            }}
                                         >
-                                            Vezi Feedback
+                                            Vezi Rezultate
                                         </Button>
                                     </CardActions>
                                 </Card>
