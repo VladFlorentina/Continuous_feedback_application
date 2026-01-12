@@ -28,9 +28,12 @@ const ProfessorDashboard = () => {
         <Container>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4, mb: 4 }}>
                 <Typography variant="h4">Panou Profesor</Typography>
-                <Button variant="outlined" color="error" onClick={logout}>Logout</Button>
+                <Box>
+                    <Button variant="outlined" onClick={() => navigate('/profile')} sx={{ mr: 1 }}>Profil</Button>
+                    <Button variant="outlined" color="error" onClick={logout}>Logout</Button>
+                </Box>
             </Box>
-            
+
             <Button variant="contained" onClick={() => navigate('/create-activity')} sx={{ mb: 4 }}>
                 + Creeaza Activitate Noua
             </Button>

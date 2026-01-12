@@ -7,6 +7,7 @@ import ActivityDetails from './pages/ActivityDetails';
 import StudentJoin from './pages/StudentJoin';
 import StudentFeedback from './pages/StudentFeedback';
 import AdminDashboard from './pages/AdminDashboard';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
 
         <Route path="/dashboard" element={<ProfessorDashboard />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/create-activity" element={<CreateActivity />} />
         <Route path="/activity/:id" element={<ActivityDetails />} />
 
