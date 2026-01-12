@@ -1,25 +1,64 @@
+const { Sequelize, DataTypes } = require('sequelize');
 const bcrypt = require('bcryptjs');
-const db = require('./config/database');
-const User = db.User;
 require('dotenv').config();
 
-// Script pentru a crea un cont de admin secundar (exemplu pentru colega ta)
-async function createColleagueAdmin() {
+// Configurare directă
+const sequelize = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASS,
+    {
+        host: process.env.DB_HOST,
+        dialect: process.env.DB_DIALECT,
+        logging: false,
+    }
+);
+
+// Model User simplificat
+const User = sequelize.define('User', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'professor'
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    }
+}, {
+    tableName: 'Users',
+    timestamps: true
+});
+
+async function createAdmin() {
     try {
-        await db.sequelize.authenticate();
+        await sequelize.authenticate();
         console.log('Connected to DB.');
 
-        // TODO: Modifica aici cu datele reale
-        const email = 'colega@admin.com';
-        const password = 'passcolegaadmin';
+        const email = 'colega@test.com';
+        const password = 'adminpassword';
         const name = 'Admin Colega';
 
         let user = await User.findOne({ where: { email } });
         if (user) {
-            console.log(`User ${email} already exists. Updating role to admin...`);
+            console.log('User exists. Updating role...');
             user.role = 'admin';
             await user.save();
-            console.log('Role updated successfully.');
+            console.log('Admin role updated.');
             return;
         }
 
@@ -33,10 +72,10 @@ async function createColleagueAdmin() {
 
         console.log(`Admin ${name} created successfully.`);
     } catch (error) {
-        console.error('Error creating admin:', error);
+        console.error('Error:', error);
     } finally {
-        process.exit();
+        await sequelize.close();
     }
 }
 
-createColleagueAdmin();
+createAdmin();

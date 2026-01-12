@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import { toast } from 'react-toastify';
 import api from '../services/api';
 
 const CreateActivity = () => {
@@ -20,8 +21,10 @@ const CreateActivity = () => {
       });
       setQrCode(response.data.qrCode);
       setAccessCode(response.data.accessCode);
+      toast.success('Activitate creata cu succes!');
     } catch (error) {
-      alert('Eroare la creare. Asigura-te ca backend-ul ruleaza.');
+      console.error(error);
+      toast.error('Eroare la creare. Verifica conexiunea.');
     }
   };
 

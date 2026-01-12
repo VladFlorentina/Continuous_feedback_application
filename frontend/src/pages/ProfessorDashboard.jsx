@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Button, Typography, Box, Card, CardContent } from '@mui/material';
+import { toast } from 'react-toastify';
 import api from '../services/api';
 
 const ProfessorDashboard = () => {
@@ -14,6 +15,7 @@ const ProfessorDashboard = () => {
                 setActivities(response.data);
             } catch (error) {
                 console.error(error);
+                toast.error('Nu s-au putut incarca activitatile.');
             }
         };
         fetchActivities();
@@ -22,6 +24,7 @@ const ProfessorDashboard = () => {
     const logout = () => {
         localStorage.removeItem('token');
         navigate('/login');
+        toast.info('Te-ai deconectat.');
     };
 
     return (
