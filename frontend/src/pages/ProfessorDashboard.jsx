@@ -1,140 +1,138 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Button, Typography, Box, Card, CardContent, Grid, IconButton, Avatar, Tooltip } from '@mui/material';
-import { toast } from 'react-toastify';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import LogoutIcon from '@mui/icons-material/Logout';
-import PersonIcon from '@mui/icons-material/Person';
-import BarChartIcon from '@mui/icons-material/BarChart'; // Iconita pentru rezultate
+import { Container, Button, Typography, Box, Grid, Card, CardContent, CardActions, Chip } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import api from '../services/api';
 
 const ProfessorDashboard = () => {
+    // Stocarea listei de activitati
     const [activities, setActivities] = useState([]);
     const navigate = useNavigate();
+    const userName = localStorage.getItem('name');
 
+    // Preluarea activitatilor de la server la incarcarea paginii
     useEffect(() => {
         const fetchActivities = async () => {
             try {
                 const response = await api.get('/activities');
                 setActivities(response.data);
             } catch (error) {
-                console.error(error);
-                toast.error('Nu s-au putut incarca activitatile.');
+                console.error('Failed to fetch activities', error);
             }
         };
         fetchActivities();
     }, []);
 
-    const logout = () => {
-        localStorage.removeItem('token');
+    // Functie pentru delogare (optionala, daca vrem sa o adaugam in header)
+    const handleLogout = () => {
+        localStorage.clear();
         navigate('/login');
-        toast.info('Te-ai deconectat.');
     };
 
-    // Culori pastel pentru carduri, se repeta ciclic
-    const cardColors = ['#E8DAEF', '#D4E6F1', '#D1F2EB', '#FDEBD0', '#FADBD8', '#FCF3CF'];
-
     return (
-        <Box sx={{ minHeight: '100vh', bgcolor: '#f8f9fa', pb: 8 }}>
-            {/* Header simplu si curat */}
+        <Box sx={{ minHeight: '100vh', backgroundColor: '#f4f6f8', pb: 4 }}>
+            {/* Header-ul paginii */}
             <Box sx={{
-                bgcolor: '#fff',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-                py: 2,
-                px: 4,
-                mb: 6,
+                background: 'linear-gradient(90deg, #1976d2 0%, #1565c0 100%)',
+                color: 'white',
+                p: 4,
+                mb: 4,
+                boxShadow: 2,
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center'
             }}>
-                <Typography variant="h5" fontWeight="bold" color="primary.main">
-                    Feedback App
-                </Typography>
                 <Box>
-                    <Tooltip title="Profilul Meu">
-                        <IconButton onClick={() => navigate('/profile')} sx={{ mr: 1, color: 'text.secondary' }}>
-                            <PersonIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Deconectare">
-                        <IconButton onClick={logout} color="error">
-                            <LogoutIcon />
-                        </IconButton>
-                    </Tooltip>
+                    <Typography variant="h4" fontWeight="bold">
+                        Panou de Control
+                    </Typography>
+                    <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
+                        Bine ai venit, {userName}!
+                    </Typography>
                 </Box>
+                <Button color="inherit" variant="outlined" onClick={handleLogout} sx={{ borderColor: 'rgba(255,255,255,0.5)' }}>
+                    Delogare
+                </Button>
             </Box>
 
             <Container maxWidth="lg">
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-                    <Typography variant="h4" fontWeight="bold" sx={{ color: '#333' }}>
-                        Activitatile Mele
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                    <Typography variant="h5" color="text.primary" fontWeight="600">
+                        Activitatile Tale
                     </Typography>
                     <Button
                         variant="contained"
-                        size="large"
-                        startIcon={<AddCircleOutlineIcon />}
+                        startIcon={<AddIcon />}
                         onClick={() => navigate('/create-activity')}
-                        sx={{
-                            borderRadius: 30,
-                            px: 4,
-                            background: 'linear-gradient(45deg, #2ecc71, #27ae60)'
-                        }}
+                        sx={{ borderRadius: 20, px: 3, textTransform: 'none', fontSize: '1rem' }}
                     >
                         Activitate Noua
                     </Button>
                 </Box>
 
-                {activities.length === 0 ? (
-                    <Box textAlign="center" mt={10} color="text.secondary">
-                        <Typography variant="h6">Nu ai creat nicio activitate inca.</Typography>
-                        <Typography>Apasa butonul de mai sus pentru a incepe!</Typography>
-                    </Box>
-                ) : (
-                    <Grid container spacing={3}>
-                        {activities.map((activity, index) => (
+                {/* Lista de activitati sub forma de Grid */}
+                <Grid container spacing={3}>
+                    {activities.length === 0 ? (
+                        <Grid item xs={12}>
+                            <Typography textAlign="center" color="text.secondary" sx={{ py: 5 }}>
+                                Nu ai creat nicio activitate inca. Incepe prin a apasa butoul "Activitate Noua".
+                            </Typography>
+                        </Grid>
+                    ) : (
+                        activities.map((activity) => (
                             <Grid item xs={12} sm={6} md={4} key={activity.id}>
                                 <Card sx={{
                                     height: '100%',
                                     display: 'flex',
                                     flexDirection: 'column',
-                                    justifyContent: 'space-between',
-                                    bgcolor: cardColors[index % cardColors.length],
-                                    transition: 'transform 0.2s',
-                                    '&:hover': { transform: 'translateY(-5px)', boxShadow: 4 }
+                                    borderRadius: 3,
+                                    transition: 'transform 0.2s, box-shadow 0.2s',
+                                    '&:hover': {
+                                        transform: 'translateY(-4px)',
+                                        boxShadow: 6
+                                    }
                                 }}>
-                                    <CardContent>
-                                        <Typography variant="h6" fontWeight="bold" gutterBottom>
+                                    <CardContent sx={{ flexGrow: 1 }}>
+                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                                            <Chip label={`Cod: ${activity.accessCode}`} color="primary" variant="outlined" size="small" />
+                                        </Box>
+                                        <Typography gutterBottom variant="h6" component="div" fontWeight="bold">
                                             {activity.description}
                                         </Typography>
-                                        <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-                                            <Typography variant="caption" sx={{ bgcolor: 'rgba(255,255,255,0.6)', px: 1, borderRadius: 1 }}>
-                                                CODE: <b>{activity.accessCode}</b>
+
+                                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 2, color: 'text.secondary' }}>
+                                            <CalendarTodayIcon fontSize="small" sx={{ mr: 1 }} />
+                                            <Typography variant="body2">
+                                                {new Date(activity.startDate).toLocaleDateString('ro-RO')}
                                             </Typography>
-                                            <Typography variant="caption" sx={{ bgcolor: 'rgba(255,255,255,0.6)', px: 1, borderRadius: 1 }}>
-                                                {new Date(activity.startDate).toLocaleDateString()}
+                                        </Box>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, color: 'text.secondary' }}>
+                                            <AccessTimeIcon fontSize="small" sx={{ mr: 1 }} />
+                                            <Typography variant="body2">
+                                                {activity.durationMinutes} minute
                                             </Typography>
                                         </Box>
                                     </CardContent>
-                                    <Box sx={{ p: 2, pt: 0 }}>
+                                    <CardActions sx={{ p: 2, pt: 0 }}>
                                         <Button
-                                            fullWidth
+                                            size="small"
                                             variant="contained"
-                                            sx={{
-                                                bgcolor: 'rgba(255,255,255,0.9)',
-                                                color: '#333',
-                                                '&:hover': { bgcolor: '#fff' }
-                                            }}
-                                            startIcon={<BarChartIcon />}
+                                            fullWidth
+                                            endIcon={<ArrowForwardIcon />}
                                             onClick={() => navigate(`/activity/${activity.id}`)}
+                                            sx={{ borderRadius: 2 }}
                                         >
-                                            Vezi Rezultate
+                                            Vezi Feedback
                                         </Button>
-                                    </Box>
+                                    </CardActions>
                                 </Card>
                             </Grid>
-                        ))}
-                    </Grid>
-                )}
+                        ))
+                    )}
+                </Grid>
             </Container>
         </Box>
     );
