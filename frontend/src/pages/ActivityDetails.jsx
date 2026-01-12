@@ -34,6 +34,31 @@ const ActivityDetails = () => {
     return Object.values(grouped);
   };
 
+  const downloadCSV = () => {
+    if (!activity || !activity.feedback || activity.feedback.length === 0) {
+      alert("Nu exista date de exportat!");
+      return;
+    }
+
+    const headers = ["Data si Ora", "Tip Reactie"];
+    const rows = activity.feedback.map(f => [
+      new Date(f.createdAt).toLocaleString(),
+      f.feedbackType
+    ]);
+
+    const csvContent = "data:text/csv;charset=utf-8,"
+      + headers.join(",") + "\n"
+      + rows.map(e => e.join(",")).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `raport_activitate_${activity.accessCode}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const fetchData = async () => {
     try {
       const response = await api.get(`/activities/${id}`);
@@ -63,7 +88,10 @@ const ActivityDetails = () => {
 
   return (
     <Container sx={{ mt: 4, pb: 8 }}>
-      <Button onClick={() => navigate('/dashboard')} variant="outlined" sx={{ mb: 2 }}>Inapoi la Dashboard</Button>
+      <Box sx={{ mb: 2, display: 'flex', gap: 2 }}>
+        <Button onClick={() => navigate('/dashboard')} variant="outlined">Inapoi la Dashboard</Button>
+        <Button onClick={downloadCSV} variant="contained" color="success">Descarca CSV</Button>
+      </Box>
       <Typography variant="h4" sx={{ mb: 1 }}>Rezultate: {activity.description}</Typography>
       <Typography variant="subtitle1" sx={{ mb: 4, color: 'text.secondary' }}>Cod Acces: {activity.accessCode}</Typography>
 
