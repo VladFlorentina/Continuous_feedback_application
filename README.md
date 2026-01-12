@@ -55,3 +55,11 @@ Aplicatia va fi disponibila la adresa afisata in terminal (de obicei http://loca
 Codul este comentat si structurat modular. Pentru modificari:
 * Adaugare rute noi: Vezi `backend/routes`.
 * Modificare UI: Vezi `frontend/src/pages` si `components`.
+
+## Actualizari Recente (v1.1)
+
+*   **Baza de Date Cloud:** Migrare completa catre **Supabase** (PostgreSQL Cloud) pentru persistenta datelor.
+*   **Securitate:** Implementare SSL obligatoriu pentru conexiunea BD.
+*   **UI/UX:** Redesign complet al paginii de statistici (`ActivityDetails`) cu grafice colorate si carduri moderne.
+*   **Documentatie:** Adaugare comentarii JSDoc standardizate pentru tot codul backend si frontend cheie.
+*   **Roadmap:** Proiectul este pregatit pentru deployment public (Render/Vercel).
