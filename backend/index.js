@@ -29,11 +29,11 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
 }));
 
-// Rute
+
 app.use('/api/auth', authRoutes);
 app.use('/api/activities', activityRoutes);
 app.use('/api', studentRoutes);
-app.use('/api/admin', adminRoutes); // Rute publice
+app.use('/api/admin', adminRoutes); 
 
 app.get('/', (req, res) => {
   res.send('Server functional!');

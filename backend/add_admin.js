@@ -2,7 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
-// Configurare directă
+
 const sequelize = new Sequelize(
     process.env.DB_NAME,
     process.env.DB_USER,
@@ -14,7 +14,7 @@ const sequelize = new Sequelize(
     }
 );
 
-// Model User simplificat
+
 const User = sequelize.define('User', {
     id: {
         type: DataTypes.INTEGER,

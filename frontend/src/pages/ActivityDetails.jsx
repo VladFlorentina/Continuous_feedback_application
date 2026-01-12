@@ -102,7 +102,7 @@ const ActivityDetails = () => {
       <Typography variant="h4" sx={{ mb: 1 }}>Rezultate: {activity.description}</Typography>
       <Typography variant="subtitle1" sx={{ mb: 4, color: 'text.secondary' }}>Cod Acces: {activity.accessCode}</Typography>
 
-      {/* Totaluri */}
+      {}
       <Grid container spacing={3} sx={{ mb: 6 }}>
         <Grid item xs={6} sm={3}><Paper elevation={3} sx={{ p: 2, textAlign: 'center', bgcolor: '#e8f5e9' }}><Typography variant="h3">😊</Typography><Typography variant="h5">{stats.smiley}</Typography></Paper></Grid>
         <Grid item xs={6} sm={3}><Paper elevation={3} sx={{ p: 2, textAlign: 'center', bgcolor: '#ffebee' }}><Typography variant="h3">☹️</Typography><Typography variant="h5">{stats.frowny}</Typography></Paper></Grid>

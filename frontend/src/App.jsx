@@ -21,7 +21,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Protected Routes */}
+        {}
         <Route path="/dashboard" element={
           <ProtectedRoute>
             <ProfessorDashboard />
@@ -48,7 +48,7 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* Public Routes */}
+        {}
         <Route path="/join" element={<StudentJoin />} />
         <Route path="/feedback" element={<StudentFeedback />} />
       </Routes>

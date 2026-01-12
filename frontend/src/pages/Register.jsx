@@ -18,10 +18,10 @@ const Register = () => {
         } catch (error) {
             console.error(error);
             if (error.response && error.response.data && error.response.data.errors) {
-                // Erori de validare (array)
+                
                 error.response.data.errors.forEach(err => toast.error(err.msg));
             } else if (error.response && error.response.data) {
-                // Eroare text direct (ex: Utilizatorul exista deja)
+                
                 toast.error(typeof error.response.data === 'string' ? error.response.data : 'Eroare la inregistrare');
             } else {
                 toast.error('Eroare de conexiune la server');

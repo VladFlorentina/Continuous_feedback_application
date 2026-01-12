@@ -14,7 +14,7 @@ const Profile = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Incarcam numele din localStorage sau (optional) am putea face GET /auth/me daca exista
+        
         const storedName = localStorage.getItem('userName');
         if (storedName) {
             setFormData(prev => ({ ...prev, name: storedName }));

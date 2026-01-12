@@ -4,10 +4,10 @@ const db = require('../config/database');
 
 describe('Auth API', () => {
 
-    // Închidem conexiunea la BD și serverul după toate testele
+    
     afterAll(async () => {
-        await db.sequelize.close(); // Închide conexiunea Sequelize
-        server.close(); // Închide serverul HTTP
+        await db.sequelize.close(); 
+        server.close(); 
     });
 
     test('Health Check - GET /', async () => {
@@ -34,11 +34,11 @@ describe('Auth API', () => {
         expect(res.body.role).toBe('admin');
     });
 
-    test('Register cu parolă scurtă - POST /api/auth/register', async () => {
+    test('Register cu parola scurta - POST /api/auth/register', async () => {
         const res = await request(app).post('/api/auth/register').send({
             name: 'Test User',
             email: 'test_invalid@test.com',
-            password: '123' // prea scurta
+            password: '123' 
         });
         expect(res.statusCode).toEqual(400);
         expect(res.body.errors).toBeDefined();

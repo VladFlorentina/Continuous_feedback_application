@@ -74,7 +74,7 @@ const AdminDashboard = () => {
                 <Button variant="outlined" color="error" onClick={handleLogout}>Logout</Button>
             </Box>
 
-            {/* Stats Section */}
+            {}
             <Grid container spacing={3} sx={{ mb: 6 }}>
                 <Grid item xs={12} sm={3}>
                     <Paper elevation={3} sx={{ p: 3, textAlign: 'center', bgcolor: '#e3f2fd' }}>
@@ -102,7 +102,7 @@ const AdminDashboard = () => {
                 </Grid>
             </Grid>
 
-            {/* User Management Section */}
+            {}
             <Typography variant="h5" sx={{ mb: 2 }}>Management Utilizatori</Typography>
             <TableContainer component={Paper}>
                 <Table>
@@ -136,7 +136,7 @@ const AdminDashboard = () => {
                 </Table>
             </TableContainer>
 
-            {/* Edit User Dialog */}
+            {}
             <Dialog open={openEdit} onClose={() => setOpenEdit(false)}>
                 <DialogTitle>Editeaza Utilizator</DialogTitle>
                 <DialogContent>
