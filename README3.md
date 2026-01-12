@@ -4,14 +4,14 @@ Salut! Aplicatia este acum functionala, testata si stabila. Urmatorul mare pas e
 
 Iata ce a mai ramas de facut:
 
-## 1. Design si UI/UX (Prioritate Maxima)
+## 1. Design si UI/UX (In Progres - Aproape Gata)
 
 *   **Interfata Moderna si Prietenoasa:**
-    *   *Situatie curenta:* Design-ul este functional, dar bazat pe componente standard Material UI.
-    *   *Ce trebuie sa fac:* Sa restilizez complet aplicatia. Vreau culori pale pentru calm (pasteluri), colturi rotunjite, animatii subtile si un aspect prietenos. Utilizatorii trebuie sa se simta bine cand folosesc aplicatia.
+    *   *Realizat:* Tema globala Pastel, Login/Register Card Style, Student UI Mobile-First, Profesor Dashboard cu Carduri.
+    *   *Ce a mai ramas:* Pagina de Statistici (`ActivityDetails`) necesita aceeasi atentie la detalii (grafice cute).
 
 *   **Responsive Design:**
-    *   *Ce trebuie sa fac:* Sa ma asigur ca toate elementele se aseaza perfect atat pe laptop, cat si pe telefoanele studentilor.
+    *   *Ce trebuie sa fac:* Verificare finala pe mobil.
 
 ## 3. Conformitate Academica (Documentatie)
 *   **Comentarea Codului:**

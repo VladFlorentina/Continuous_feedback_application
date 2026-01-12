@@ -21,6 +21,12 @@ Salut! Aici este jurnalul modificarilor pe care le-am facut eu pentru a aduce pr
 *   **Admin Tools:** Am creat scripturi automate pentru gestionarea adminilor: `add_admin.js` (creare/promovare admin) si `change_email.js` (modificare date admin).
 *   **Teste Automate:** Am configurat un mediu de testare robust folosind `Jest` si `Supertest`. Am scris primele teste de integrare pentru autentificare (Login/Register/HealthCheck).
 
+### Design si Interfata (NOU - Phase 2)
+*   **Tema Pastel:** Am creat o tema globala (`theme.js`) cu culori pastelate si prietenoase (calm blue, soft yellow) si am rotunjit toate colturile ("border-radius: 20px").
+*   **Redesign Auth:** Paginile de Login si Register sunt acum carduri elegante, centrate perfect.
+*   **Interfata Student:** Am simplificat pagina de acces si am pus butoane imense si colorate pentru feedback, ideale pentru telefon.
+*   **Dashboard Profesor:** Am transformat tabelul plictisitor intr-o grila de carduri colorate si animate.
+
 ### Design si Curatenie Cod
 *   **Fara Diacritice si Comentarii:** Am rulat un script de curatare a codului care a eliminat toate diacriticele si comentariile inutile din surse, pentru a mentine proiectul curat si compatibil universal ("clean code").
 
