@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
+import { toast } from 'react-toastify';
 import api from '../services/api';
 
 const Register = () => {
@@ -12,9 +13,19 @@ const Register = () => {
     const handleRegister = async () => {
         try {
             await api.post('/auth/register', { name, email, password });
+            toast.success('Cont creat cu succes! Te poti autentifica.');
             navigate('/login');
         } catch (error) {
-            alert('Eroare la inregistrare');
+            console.error(error);
+            if (error.response && error.response.data && error.response.data.errors) {
+                // Erori de validare (array)
+                error.response.data.errors.forEach(err => toast.error(err.msg));
+            } else if (error.response && error.response.data) {
+                // Eroare text direct (ex: Utilizatorul exista deja)
+                toast.error(typeof error.response.data === 'string' ? error.response.data : 'Eroare la inregistrare');
+            } else {
+                toast.error('Eroare de conexiune la server');
+            }
         }
     };
 
