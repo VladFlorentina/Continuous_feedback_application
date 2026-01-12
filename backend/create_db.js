@@ -2,21 +2,22 @@ const { Client } = require('pg');
 require('dotenv').config();
 
 const client = new Client({
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  host: process.env.DB_HOST,
+  user: process.env.DB_USER || 'postgres',
+  password: process.env.DB_PASS || 'Madalina88.',
+  host: process.env.DB_HOST || 'localhost',
   port: 5432,
   database: 'postgres'
 });
 
 async function createDb() {
+  const dbName = process.env.DB_NAME || 'feedback_app';
   try {
     await client.connect();
-    await client.query(`CREATE DATABASE ${process.env.DB_NAME};`);
-    console.log(`Database ${process.env.DB_NAME} created successfully.`);
+    await client.query(`CREATE DATABASE ${dbName};`);
+    console.log(`Database ${dbName} created successfully.`);
   } catch (err) {
     if (err.code === '42P04') {
-      console.log(`Database ${process.env.DB_NAME} already exists.`);
+      console.log(`Database ${dbName} already exists.`);
     } else {
       console.error('Error creating database:', err);
     }
