@@ -72,10 +72,16 @@ router.post('/feedback', async (req, res) => {
         }
 
 
-        await Feedback.create({
+        const feedback = await Feedback.create({
             activityId: activity.id,
             feedbackType: feedback_type
         });
+
+        // Emit socket event for real-time updates
+        const io = req.app.get('io');
+        if (io) {
+            io.emit(`new_feedback_${activity.id}`, feedback);
+        }
 
         res.status(201).json({ message: 'Feedback inregistrat.' });
 

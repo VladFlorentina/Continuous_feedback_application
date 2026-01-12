@@ -1,4 +1,6 @@
 const express = require('express');
+const http = require('http');
+const { Server } = require("socket.io");
 const db = require('./config/database');
 const authRoutes = require('./routes/auth');
 const activityRoutes = require('./routes/activity');
@@ -6,8 +8,18 @@ const studentRoutes = require('./routes/student');
 const adminRoutes = require('./routes/admin');
 require('dotenv').config();
 
+
 const app = express();
+const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+app.set('io', io);
 
 app.use(express.json());
 const cors = require('cors');
@@ -33,7 +45,9 @@ async function startServer() {
     console.log('Conexiune BD stabilita cu succes.');
     await db.sequelize.sync({ alter: true });
     console.log('Tabele sincronizate.');
-    app.listen(PORT, '0.0.0.0', () => {
+    await db.sequelize.sync({ alter: true });
+    console.log('Tabele sincronizate.');
+    server.listen(PORT, '0.0.0.0', () => {
       console.log(`Server ruland pe portul ${PORT} (accesibil din retea)`);
     });
   } catch (error) {
