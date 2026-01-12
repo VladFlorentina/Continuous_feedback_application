@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
+import { TextField, Button, Container, Typography, Box, Paper, Avatar } from '@mui/material';
+import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 
@@ -18,10 +19,8 @@ const Register = () => {
         } catch (error) {
             console.error(error);
             if (error.response && error.response.data && error.response.data.errors) {
-                
                 error.response.data.errors.forEach(err => toast.error(err.msg));
             } else if (error.response && error.response.data) {
-                
                 toast.error(typeof error.response.data === 'string' ? error.response.data : 'Eroare la inregistrare');
             } else {
                 toast.error('Eroare de conexiune la server');
@@ -30,16 +29,64 @@ const Register = () => {
     };
 
     return (
-        <Container maxWidth="xs">
-            <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Typography component="h1" variant="h5">Inregistrare</Typography>
-                <TextField margin="normal" fullWidth label="Nume" value={name} onChange={(e) => setName(e.target.value)} />
-                <TextField margin="normal" fullWidth label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                <TextField margin="normal" fullWidth type="password" label="Parola" value={password} onChange={(e) => setPassword(e.target.value)} />
-                <Button fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} onClick={handleRegister}>Register</Button>
-                <Link to="/login">Ai deja cont? Login</Link>
-            </Box>
-        </Container>
+        <Box sx={{
+            height: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)'
+        }}>
+            <Container maxWidth="xs">
+                <Paper elevation={3} sx={{
+                    p: 4,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    borderRadius: 4
+                }}>
+                    <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+                        <PersonAddOutlinedIcon />
+                    </Avatar>
+                    <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
+                        Creeaza Cont
+                    </Typography>
+                    <TextField
+                        margin="normal"
+                        fullWidth
+                        label="Nume Complet"
+                        autoFocus
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    <TextField
+                        margin="normal"
+                        fullWidth
+                        label="Email Address"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <TextField
+                        margin="normal"
+                        fullWidth
+                        label="Password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, height: 48 }}
+                        onClick={handleRegister}
+                    >
+                        Inregistrare
+                    </Button>
+                    <Link to="/login" style={{ textDecoration: 'none', color: '#1976d2' }}>
+                        Ai deja cont? Login
+                    </Link>
+                </Paper>
+            </Container>
+        </Box>
     );
 };
 

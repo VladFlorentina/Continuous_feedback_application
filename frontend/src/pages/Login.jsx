@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
+import { TextField, Button, Container, Typography, Box, Paper, Avatar } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 
@@ -37,17 +38,62 @@ const Login = () => {
     };
 
     return (
-        <Container maxWidth="xs">
-            <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Typography component="h1" variant="h5">Autentificare</Typography>
-                <TextField margin="normal" fullWidth label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                <TextField margin="normal" fullWidth type="password" label="Parola" value={password} onChange={(e) => setPassword(e.target.value)} />
-                <Button fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} onClick={handleLogin}>Login</Button>
-                <Link to="/register">Nu ai cont? Inregistreaza-te</Link>
-                <br />
-                <Link to="/join">Esti student? Intra aici</Link>
-            </Box>
-        </Container>
+        <Box sx={{
+            height: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)'
+        }}>
+            <Container maxWidth="xs">
+                <Paper elevation={3} sx={{
+                    p: 4,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    borderRadius: 4
+                }}>
+                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                        <LockOutlinedIcon />
+                    </Avatar>
+                    <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
+                        Autentificare
+                    </Typography>
+                    <TextField
+                        margin="normal"
+                        fullWidth
+                        label="Email Address"
+                        autoComplete="email"
+                        autoFocus
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <TextField
+                        margin="normal"
+                        fullWidth
+                        label="Password"
+                        type="password"
+                        autoComplete="current-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, height: 48 }}
+                        onClick={handleLogin}
+                    >
+                        Login
+                    </Button>
+                    <Link to="/register" style={{ textDecoration: 'none', color: '#1976d2', marginBottom: 10 }}>
+                        Nu ai cont? Inregistreaza-te
+                    </Link>
+                    <Link to="/join" style={{ textDecoration: 'none', color: '#555' }}>
+                        Esti student? Intra aici
+                    </Link>
+                </Paper>
+            </Container>
+        </Box>
     );
 };
 
