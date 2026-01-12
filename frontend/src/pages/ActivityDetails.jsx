@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Typography, Grid, Paper, Button, Box } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { io } from 'socket.io-client';
 import api from '../services/api';
 
 const ActivityDetails = () => {
@@ -80,8 +81,14 @@ const ActivityDetails = () => {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 3000);
-    return () => clearInterval(interval);
+
+    const socket = io(`http://${window.location.hostname}:3000`);
+
+    socket.on(`new_feedback_${id}`, () => {
+      fetchData();
+    });
+
+    return () => socket.disconnect();
   }, [id]);
 
   if (!activity) return <div>Se incarca...</div>;
