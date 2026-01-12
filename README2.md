@@ -19,10 +19,14 @@ Salut! Aici este jurnalul modificarilor pe care le-am facut eu pentru a aduce pr
 ### Functionalitati Noi
 *   **Timeline View (Grafice):** Colega mea facuse doar partea de totaluri. Eu am adaugat o librarie de grafice (`recharts`) si am implementat logica matematica in `ActivityDetails.jsx` pentru a grupa feedback-ul pe intervale de timp (la fiecare 10 secunde). Acum putem vedea "pulsul" clasei in timp real.
 *   **CORS:** Am rezolvat erorile de Cross-Origin, astfel incat frontend-ul (port 5173) sa poata vorbi cu backend-ul (port 3000) fara blocaje de securitate in browser.
+*   **WebSockets (Socket.io):** Am inlocuit sistemul vechi de "polling" (actualizare la 3 secunde) cu `Socket.io`. Acum, pagina de statistici este cu adevarat live - se actualizeaza instantaneu cand un student apasa un emoticon, fara a incarca inutil serverul.
+*   **Export CSV:** Am adaugat un buton in pagina activitatii care permite profesorului sa descarce toate feedback-urile intr-un fisier CSV, pentru analiza ulterioara.
+*   **Validare Input:** Am securizat formularul de inregistrare si login folosind `express-validator`, pentru a preveni introducerea de date invalide sau malitioase.
 
 ### Design si Interfata
 *   **Curatenie in cod:** Am trecut prin toate fisierele si am scos diacriticele (ex: "ș" -> "s") pentru a evita problemele de afisare (encoding) pe unele browsere sau terminale vechi.
 *   **UI Premium:** Am refacut pagina de feedback pentru studenti folosind un stil "Glassmorphism" (translucid), butoane mari si animatii la click, ca sa arate bine pe ecranele telefoanelor.
+*   **Setari Profil:** Am creat o pagina de profil unde utilizatorii (profesorii) isi pot schimba numele si parola. Schimbarea parolei cere confirmarea celei vechi pentru securitate sporita.
 
 ### Panou Administrator si Gestiune Roluri
 *   **Roluri Utilizatori:** Am implementat un sistem de roluri (admin, professor) in baza de date. Acum, la login, aplicatia stie sa redirectioneze automat profesorii catre dashboard-ul lor si administratorii catre pagina de statistici.
@@ -44,7 +48,16 @@ Salut! Aici este jurnalul modificarilor pe care le-am facut eu pentru a aduce pr
     npm run dev -- --host
     ```
 
+3.  **Docker (Nou!):**
+    Daca nu vrei sa instalezi nimic, poti rula totul cu o singura comanda (daca ai Docker instalat):
+    ```bash
+    docker-compose up --build
+    ```
+
 ## 4. Tehnologii Adaugate de mine
 *   `recharts` - pentru grafice.
 *   `cors` - pentru securitate si vizibilitate retea.
 *   `bcryptjs` - pentru autentificare stabila.
+*   `socket.io` & `socket.io-client` - pentru comunicare in timp real (websockets).
+*   `express-validator` - pentru validarea datelor de intrare.
+*   `Docker` - pentru containerizarea aplicatiei.
