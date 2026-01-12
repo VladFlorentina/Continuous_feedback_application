@@ -19,101 +19,120 @@ const StudentFeedback = () => {
   };
 
   const emojiStyle = {
-    fontSize: '4rem',
-    transition: 'transform 0.1s',
+    fontSize: '5rem',
+    display: 'block',
+    marginBottom: '10px'
   };
 
   return (
-    <Container sx={{
-      height: '100vh',
+    <Box sx={{
+      minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
-      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
+      background: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+      p: 2
     }}>
-      <Paper elevation={4} sx={{
-        p: 4,
-        borderRadius: 4,
-        backdropFilter: 'blur(10px)',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)'
-      }}>
-        <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', mb: 4, color: '#333' }}>
-          Cum te simti acum?
-        </Typography>
+      <Container maxWidth="md">
+        <Paper elevation={6} sx={{
+          p: { xs: 2, md: 5 },
+          borderRadius: 6,
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          textAlign: 'center'
+        }}>
+          <Typography variant="h3" gutterBottom sx={{ fontWeight: 800, color: '#444', mb: 1 }}>
+            Feedback Time!
+          </Typography>
+          <Typography variant="h6" sx={{ color: '#666', mb: 5 }}>
+            Cum ti se pare cursul acum?
+          </Typography>
 
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{
-                height: 150,
-                bgcolor: '#e8f5e9',
-                '&:hover': { bgcolor: '#c8e6c9', transform: 'scale(1.05)' },
-                transition: 'all 0.2s',
-                borderRadius: 4,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-              }}
-              onClick={() => sendFeedback('smiley')}
-            >
-              <span style={emojiStyle}>😊</span>
-            </Button>
+          <Grid container spacing={3}>
+            <Grid item xs={6} sm={6}>
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{
+                  py: 4,
+                  bgcolor: '#daf7a6',
+                  color: '#333',
+                  borderRadius: 4,
+                  '&:hover': { bgcolor: '#c5e88d', transform: 'translateY(-5px)' },
+                  transition: 'all 0.3s'
+                }}
+                onClick={() => sendFeedback('smiley')}
+              >
+                <Box>
+                  <span style={emojiStyle}>😊</span>
+                  <Typography fontWeight="bold">Totul e Clar</Typography>
+                </Box>
+              </Button>
+            </Grid>
+            <Grid item xs={6} sm={6}>
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{
+                  py: 4,
+                  bgcolor: '#ffc300',
+                  color: '#333',
+                  borderRadius: 4,
+                  '&:hover': { bgcolor: '#ffb300', transform: 'translateY(-5px)' },
+                  transition: 'all 0.3s'
+                }}
+                onClick={() => sendFeedback('surprised')}
+              >
+                <Box>
+                  <span style={emojiStyle}>😮</span>
+                  <Typography fontWeight="bold">Interesant</Typography>
+                </Box>
+              </Button>
+            </Grid>
+            <Grid item xs={6} sm={6}>
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{
+                  py: 4,
+                  bgcolor: '#ff5733',
+                  color: '#fff',
+                  borderRadius: 4,
+                  '&:hover': { bgcolor: '#e64a19', transform: 'translateY(-5px)' },
+                  transition: 'all 0.3s'
+                }}
+                onClick={() => sendFeedback('frowny')}
+              >
+                <Box>
+                  <span style={emojiStyle}>☹️</span>
+                  <Typography fontWeight="bold">M-am Pierdut</Typography>
+                </Box>
+              </Button>
+            </Grid>
+            <Grid item xs={6} sm={6}>
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{
+                  py: 4,
+                  bgcolor: '#c70039',
+                  color: '#fff',
+                  borderRadius: 4,
+                  '&:hover': { bgcolor: '#900c3f', transform: 'translateY(-5px)' },
+                  transition: 'all 0.3s'
+                }}
+                onClick={() => sendFeedback('confused')}
+              >
+                <Box>
+                  <span style={emojiStyle}>😕</span>
+                  <Typography fontWeight="bold">Confuz</Typography>
+                </Box>
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{
-                height: 150,
-                bgcolor: '#ffebee',
-                '&:hover': { bgcolor: '#ffcdd2', transform: 'scale(1.05)' },
-                transition: 'all 0.2s',
-                borderRadius: 4,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-              }}
-              onClick={() => sendFeedback('frowny')}
-            >
-              <span style={emojiStyle}>☹️</span>
-            </Button>
-          </Grid>
-          <Grid item xs={6}>
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{
-                height: 150,
-                bgcolor: '#fff3e0',
-                '&:hover': { bgcolor: '#ffe0b2', transform: 'scale(1.05)' },
-                transition: 'all 0.2s',
-                borderRadius: 4,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-              }}
-              onClick={() => sendFeedback('surprised')}
-            >
-              <span style={emojiStyle}>😮</span>
-            </Button>
-          </Grid>
-          <Grid item xs={6}>
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{
-                height: 150,
-                bgcolor: '#e3f2fd',
-                '&:hover': { bgcolor: '#bbdefb', transform: 'scale(1.05)' },
-                transition: 'all 0.2s',
-                borderRadius: 4,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-              }}
-              onClick={() => sendFeedback('confused')}
-            >
-              <span style={emojiStyle}>😕</span>
-            </Button>
-          </Grid>
-        </Grid>
-      </Paper>
-      <Snackbar open={open} autoHideDuration={1000} onClose={() => setOpen(false)} message="Feedback trimis! 👍" />
-    </Container>
+        </Paper>
+      </Container>
+      <Snackbar open={open} autoHideDuration={1500} onClose={() => setOpen(false)} message="Feedback Trimis! Multumim!" />
+    </Box>
   );
 };
 
