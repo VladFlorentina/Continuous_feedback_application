@@ -1,68 +1,57 @@
-# Aplicatie pentru Feedback Continuu
+# Aplicatie de Feedback Continuu
 
-Proiect pentru materia Tehnologii Web, ASE 2025-2026.
+Aceasta aplicatie web permite profesorilor sa ceara feedback in timp real de la studenti in timpul cursurilor sau seminariilor.
 
-## 1. Despre (About)
+## Functionalitati
 
-O aplicatie web (Single Page Application) care permite profesorilor sa primeasca feedback continuu si anonim de la studenti in timpul unei activitati (curs sau seminar).
+### Pentru Profesori:
+* **Creare Cont:** Profesorii isi pot crea un cont securizat.
+* **Creare Activitate:** Pot defini activitati cu descriere si durata.
+* **Cod QR:** La crearea unei activitati, se genereaza automat un cod QR si un cod de acces unic.
+* **Monitorizare Feedback:** Profesorii vad in timp real (prin Socket.io) reactiile studentilor (Smiley, Frowny, Surprised, Confused).
+* **Istoric:** Pot vizualiza activitatile trecute.
 
-**Ideea:** Un profesor defineste o activitate si primeste un cod unic. Studentii folosesc acel cod pentru a intra intr-o interfata simpla de unde pot trimite reactii (emoticoane) oricand doresc. Profesorul vede un flux live al acestor reactii, asociate cu momentul la care au fost trimise.
+### Pentru Studenti:
+* **Acces Simplu:** Nu necesita cont. Se intra doar cu codul numeric primit de la profesor.
+* **Interfata Intuitiva:** 4 butoane mari de reactie.
+* **Anonimitate:** Feedback-ul este anonim.
 
-## 2. Functionalitati (Features)
+## Tehnologii Utilizate
 
-### Functionalitati de baza (Minime)
+* **Frontend:** React.js, Material UI, Vite
+* **Backend:** Node.js, Express.js
+* **Baza de Date:** PostgreSQL, Sequelize ORM
+* **Real-time:** Socket.io
+* **API Extern:** API QRServer pentru generarea codurilor QR
 
-* **Rolul de Profesor:**
-    * Poate defini o activitate noua la o anumita data, cu o descriere.
-    * Sistemul genereaza un cod unic de acces pentru activitate.
-    * Activitatea poate fi accesata pentru o durata prestabilita de timp.
-    * Poate vedea feedback-ul continuu (anonim) cu momentele de timp asociate.
-    * Feedback-ul este accesibil atat in timpul activitatii, cat si ulterior.
-* **Rolul de Student:**
-    * Poate introduce un cod pentru a participa la o activitate.
-    * Are acces la o interfata cu 4 emoticoane (ex: smiley face, frowny face, surprised face, confused face).
-    * Poate apasa pe un emoticon in orice moment pentru a reactiona.
-    * Poate adauga oricate instante de feedback.
+## Instructiuni de Rulare
 
-## 3. Stiva Tehnologica (Tech Stack)
+### 1. Backend
+Navigheaza in folderul `backend`:
+```bash
+cd backend
+npm install
+# Configureaza fisierul .env conform exemplului (daca exista) sau asigura-te ca ai o baza de date PostgreSQL activa
+npm start
+```
+Serverul va porni pe portul 3000.
 
-Conform cerintelor generale ale proiectului:
+### 2. Frontend
+Navigheaza in folderul `frontend`:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Aplicatia va fi disponibila la adresa afisata in terminal (de obicei http://localhost:5173).
 
-* **Frontend:** **React.js** (sau Angular 2+, Vue.js).
-* **Backend:** **Node.js** cu o interfata REST.
-* **Database:** O baza de date relationala (ex: PostgreSQL, MySQL).
-* **ORM:** Un ORM pentru accesul la baza de date (ex: Sequelize).
-* **Deployment:** TBD (ex: Azure, AWS).
-* **Versionare:** **Git**.
+## Structura Proiectului
 
-## 4. Structura Bazei de Date (Draft)
+* `/backend` - Codul sursa al serverului (API, modele DB, logica business).
+* `/frontend` - Interfata utilizator React, pagini si componente.
 
-Planul initial pentru tabelele principale:
+## Mentenanta si Dezvoltare
 
-* **Utilizatori:** Stocheaza datele profesorilor (conturi, date de autentificare).
-* **Cursuri:** O entitate care grupeaza activitatile (ex: Cursul "Tehnologii Web").
-* **Activitati:** Sesiunile de feedback (cursul sau seminarul specific la o anumita data, cu codul de acces generat).
-* **Feedback:** Stocheaza fiecare reactie trimisa de studenti (tipul reactiei, momentul de timp si activitatea de care apartine).
-
-## 5. API Endpoints (Plan initial)
-
-### Autentificare (Profesori)
-* `POST /api/auth/register` - Inregistrare profesor nou.
-* `POST /api/auth/login` - Login profesor.
-
-### Activitati (Gestionate de Profesor)
-* `POST /api/activities` - Creare activitate noua.
-* `GET /api/activities` - Preluare lista cu toate activitatile profesorului logat.
-* `GET /api/activities/:id` - Preluare detalii despre o activitate si toate feedback-urile asociate.
-
-### Feedback (Rute publice / Studenti)
-* `POST /api/join` - Verificare cod acces (Body: `{ access_code }`).
-* `POST /api/feedback` - Studentul trimite o reactie (Body: `{ access_code, feedback_type }`).
-
-## 6. Plan de Proiect (Timeline)
-
-* **Now (Nov 16):** Specs + repository setup
-* **By Dec 6:** Functional backend with REST API
-* **By late Dec:** React frontend + complete integrations
-
-*\*Nota: Acest README va fi actualizat pe masura ce proiectul avanseaza.*
+Codul este comentat si structurat modular. Pentru modificari:
+* Adaugare rute noi: Vezi `backend/routes`.
+* Modificare UI: Vezi `frontend/src/pages` si `components`.
