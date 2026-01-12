@@ -1,29 +1,54 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Typography, Grid, Paper, Button, Box } from '@mui/material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Container, Typography, Grid, Paper, Button, Box, Card, CardContent, Divider, IconButton, Tooltip as MuiTooltip } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DownloadIcon from '@mui/icons-material/Download';
+import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
+import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { io } from 'socket.io-client';
 import api from '../services/api';
 
+/**
+ * Componenta ActivityDetails
+ * 
+ * Afiseaza statisticile in timp real pentru o activitate specifica.
+ * Include grafice de evolutie si contoare pentru fiecare tip de reactie.
+ * Permite descarcarea datelor in format CSV.
+ */
 const ActivityDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  // State pentru numaratori
   const [stats, setStats] = useState({ smiley: 0, frowny: 0, surprised: 0, confused: 0 });
+
+  // State pentru datele graficului (timeline)
   const [timelineData, setTimelineData] = useState([]);
+
+  // State pentru detaliile activitatii
   const [activity, setActivity] = useState(null);
 
+  /**
+   * Proceseaza lista de feedback-uri bruta de la server
+   * si o grupeaza in intervale de timp pentru grafic.
+   * 
+   * @param {Array} feedbackList - Lista de feedback-uri
+   * @returns {Array} Datele procesate pentru Recharts
+   */
   const processTimelineData = (feedbackList) => {
     if (!feedbackList || feedbackList.length === 0) return [];
 
-
+    // Sortare cronologica
     const sortedFeedback = [...feedbackList].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-
 
     const grouped = {};
 
     sortedFeedback.forEach(f => {
       const date = new Date(f.createdAt);
-
+      // Grupam la fiecare 10 secunde pentru a evita aglomerarea
       const timeKey = `${date.getHours()}:${date.getMinutes()}:${Math.floor(date.getSeconds() / 10) * 10}`;
 
       if (!grouped[timeKey]) {
@@ -35,6 +60,9 @@ const ActivityDetails = () => {
     return Object.values(grouped);
   };
 
+  /**
+   * Genereaza si descarca un raport CSV cu toate feedback-urile.
+   */
   const downloadCSV = () => {
     if (!activity || !activity.feedback || activity.feedback.length === 0) {
       alert("Nu exista date de exportat!");
@@ -60,6 +88,9 @@ const ActivityDetails = () => {
     document.body.removeChild(link);
   };
 
+  /**
+   * Preia datele initiale de la API
+   */
   const fetchData = async () => {
     try {
       const response = await api.get(`/activities/${id}`);
@@ -79,6 +110,7 @@ const ActivityDetails = () => {
     }
   };
 
+  // Efect pentru incarcare si conexiune WebSocket
   useEffect(() => {
     fetchData();
 
@@ -91,43 +123,97 @@ const ActivityDetails = () => {
     return () => socket.disconnect();
   }, [id]);
 
-  if (!activity) return <div>Se incarca...</div>;
+  if (!activity) return <Box sx={{ p: 5, textAlign: 'center' }}><Typography>Se incarca datele...</Typography></Box>;
+
+  // Configuratia cardurilor de statistica
+  const statCards = [
+    { label: 'Inteles', value: stats.smiley, icon: <SentimentSatisfiedAltIcon fontSize="large" />, color: '#4caf50', bg: '#e8f5e9' },
+    { label: 'Neclar', value: stats.frowny, icon: <SentimentVeryDissatisfiedIcon fontSize="large" />, color: '#f44336', bg: '#ffebee' },
+    { label: 'Surprins', value: stats.surprised, icon: <SentimentNeutralIcon fontSize="large" />, color: '#ff9800', bg: '#fff3e0' },
+    { label: 'Confuz', value: stats.confused, icon: <HelpOutlineIcon fontSize="large" />, color: '#2196f3', bg: '#e3f2fd' },
+  ];
 
   return (
-    <Container sx={{ mt: 4, pb: 8 }}>
-      <Box sx={{ mb: 2, display: 'flex', gap: 2 }}>
-        <Button onClick={() => navigate('/dashboard')} variant="outlined">Inapoi la Dashboard</Button>
-        <Button onClick={downloadCSV} variant="contained" color="success">Descarca CSV</Button>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#f5f5f5', pb: 8 }}>
+
+      {/* Header cu Gradient */}
+      <Box sx={{
+        background: 'linear-gradient(135deg, #1e88e5 0%, #1565c0 100%)',
+        color: 'white',
+        py: 4,
+        px: 3,
+        mb: 4,
+        boxShadow: 3
+      }}>
+        <Container maxWidth="lg">
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <IconButton onClick={() => navigate('/dashboard')} sx={{ color: 'white' }}>
+                <ArrowBackIcon />
+              </IconButton>
+              <Box>
+                <Typography variant="h4" fontWeight="bold">{activity.description}</Typography>
+                <Typography variant="subtitle1" sx={{ opacity: 0.8 }}>Cod Acces: {activity.accessCode}</Typography>
+              </Box>
+            </Box>
+            <Button
+              variant="contained"
+              startIcon={<DownloadIcon />}
+              onClick={downloadCSV}
+              sx={{ bgcolor: 'rgba(255,255,255,0.2)', '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }}
+            >
+              Exporta CSV
+            </Button>
+          </Box>
+        </Container>
       </Box>
-      <Typography variant="h4" sx={{ mb: 1 }}>Rezultate: {activity.description}</Typography>
-      <Typography variant="subtitle1" sx={{ mb: 4, color: 'text.secondary' }}>Cod Acces: {activity.accessCode}</Typography>
 
-      {}
-      <Grid container spacing={3} sx={{ mb: 6 }}>
-        <Grid item xs={6} sm={3}><Paper elevation={3} sx={{ p: 2, textAlign: 'center', bgcolor: '#e8f5e9' }}><Typography variant="h3">😊</Typography><Typography variant="h5">{stats.smiley}</Typography></Paper></Grid>
-        <Grid item xs={6} sm={3}><Paper elevation={3} sx={{ p: 2, textAlign: 'center', bgcolor: '#ffebee' }}><Typography variant="h3">☹️</Typography><Typography variant="h5">{stats.frowny}</Typography></Paper></Grid>
-        <Grid item xs={6} sm={3}><Paper elevation={3} sx={{ p: 2, textAlign: 'center', bgcolor: '#fff3e0' }}><Typography variant="h3">😮</Typography><Typography variant="h5">{stats.surprised}</Typography></Paper></Grid>
-        <Grid item xs={6} sm={3}><Paper elevation={3} sx={{ p: 2, textAlign: 'center', bgcolor: '#e3f2fd' }}><Typography variant="h3">😕</Typography><Typography variant="h5">{stats.confused}</Typography></Paper></Grid>
-      </Grid>
+      <Container maxWidth="lg">
 
-      { }
-      <Typography variant="h5" sx={{ mb: 3 }}>Evolutie in Timp Real</Typography>
-      <Paper elevation={3} sx={{ p: 3, height: 400 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={timelineData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="time" />
-            <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="smiley" stroke="#2e7d32" strokeWidth={2} dot={false} />
-            <Line type="monotone" dataKey="frowny" stroke="#c62828" strokeWidth={2} dot={false} />
-            <Line type="monotone" dataKey="surprised" stroke="#ef6c00" strokeWidth={2} dot={false} />
-            <Line type="monotone" dataKey="confused" stroke="#1565c0" strokeWidth={2} dot={false} />
-          </LineChart>
-        </ResponsiveContainer>
-      </Paper>
-    </Container>
+        {/* Carduri Statistice */}
+        <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, color: '#555' }}>Rezumat Reactii</Typography>
+        <Grid container spacing={3} sx={{ mb: 5 }}>
+          {statCards.map((card, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <Card sx={{
+                borderRadius: 3,
+                height: '100%',
+                transition: 'transform 0.2s',
+                '&:hover': { transform: 'translateY(-5px)', boxShadow: 4 }
+              }}>
+                <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', py: 3, bgcolor: card.bg }}>
+                  <Box sx={{ color: card.color, mb: 1 }}>{card.icon}</Box>
+                  <Typography variant="h3" fontWeight="bold" sx={{ color: card.color }}>{card.value}</Typography>
+                  <Typography variant="subtitle2" color="text.secondary">{card.label}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Grafic Evolutie */}
+        <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, color: '#555' }}>Evolutie in Timp Real</Typography>
+        <Paper elevation={2} sx={{ p: 3, borderRadius: 3, height: 450 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={timelineData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
+              <XAxis dataKey="time" stroke="#777" tick={{ fontSize: 12 }} />
+              <YAxis allowDecimals={false} stroke="#777" tick={{ fontSize: 12 }} />
+              <Tooltip
+                contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}
+              />
+              <Legend wrapperStyle={{ paddingTop: '20px' }} />
+
+              <Line name="Inteles" type="monotone" dataKey="smiley" stroke="#4caf50" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+              <Line name="Neclar" type="monotone" dataKey="frowny" stroke="#f44336" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+              <Line name="Surprins" type="monotone" dataKey="surprised" stroke="#ff9800" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+              <Line name="Confuz" type="monotone" dataKey="confused" stroke="#2196f3" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </Paper>
+
+      </Container>
+    </Box>
   );
 };
 
