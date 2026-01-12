@@ -4,12 +4,19 @@ import { Container, TextField, Button, Typography, Box, Paper, Avatar } from '@m
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import api from '../services/api';
 
-// Pagina de intrare pentru studenti
-// Permite introducerea codului unic pentru a accesa o activitate
+/**
+ * Componenta StudentJoin
+ * 
+ * Pagina de intrare pentru studenti.
+ * Permite introducerea codului unic de activitate pentru validare si acces.
+ */
 const StudentJoin = () => {
   const [code, setCode] = useState('');
   const navigate = useNavigate();
 
+  /**
+   * Valideaza codul si redirectioneaza catre pagina de feedback.
+   */
   const handleJoin = async () => {
     try {
       await api.post('/join', { accessCode: code });

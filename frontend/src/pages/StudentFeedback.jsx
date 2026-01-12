@@ -3,14 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Grid, Button, Typography, Snackbar, Paper, Box } from '@mui/material';
 import api from '../services/api';
 
-// Componenta principala pentru feedback-ul studentilor
-// Aceasta afiseaza 4 emoticoane mari pe care studentii le pot apasa
-// pentru a trimite reactii in timp real catre profesor.
+/**
+ * Componenta StudentFeedback
+ * 
+ * Interfata principala pentru studenti.
+ * Afiseaza 4 emoticoane mari (butoane) pe care studentii le pot apasa
+ * pentru a trimite reactii in timp real catre profesor.
+ */
 const StudentFeedback = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const code = localStorage.getItem('activityCode');
 
+  /**
+   * Trimite feedback-ul selectat catre server.
+   * @param {string} type - Tipul de emotie (smiley, frowny, surprised, confused)
+   */
   const sendFeedback = async (type) => {
     try {
       await api.post('/feedback', { accessCode: code, feedbackType: type });
