@@ -5,71 +5,133 @@ const jwt = require('jsonwebtoken');
 const db = require('../config/database');
 const User = db.User;
 const auth = require('../middleware/auth');
-const { check, validationResult } = require('express-validator');
+require('dotenv').config();
 
+// Functie auxiliara pentru validarea formatului de email
+const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+};
 
-router.post('/register', [
-    check('name', 'Numele este obligatoriu').not().isEmpty(),
-    check('email', 'Te rog include un email valid').isEmail(),
-    check('password', 'Parola trebuie sa aiba minim 6 caractere').isLength({ min: 6 })
-], async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
+// Ruta de inregistrare
+router.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
 
+    // -----------------------------------------------------
+    // VALIDARE DATE INTRARE
+    // -----------------------------------------------------
+
+    // Verificam daca campurile sunt completate
+    if (!name || !email || !password) {
+        return res.status(400).json({
+            errors: [{ msg: 'Toate campurile sunt obligatorii (nume, email, parola).' }]
+        });
+    }
+
+    // Verificam lungimea parolei (minim 6 caractere)
+    if (password.length < 6) {
+        return res.status(400).json({
+            errors: [{ msg: 'Parola trebuie sa aiba cel putin 6 caractere.' }]
+        });
+    }
+
+    // Verificam formatul email-ului
+    if (!validateEmail(email)) {
+        return res.status(400).json({
+            errors: [{ msg: 'Adresa de email nu este valida.' }]
+        });
+    }
+
     try {
+        // Verificam daca utilizatorul exista deja
         let user = await User.findOne({ where: { email } });
-        if (user) return res.status(409).send('Utilizatorul exista deja');
+        if (user) {
+            return res.status(400).json({ errors: [{ msg: 'Utilizatorul exista deja.' }] });
+        }
 
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        // Criptam parola inainte de salvare
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-        user = await User.create({ name, email, password: hashedPassword });
+        // Cream utilizatorul nou
+        user = await User.create({
+            name,
+            email,
+            password: hashedPassword,
+            role: 'professor'
+        });
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        // Generam token JWT
+        const payload = {
+            user: {
+                id: user.id
+            }
+        };
 
-        res.status(201).json({ token: token, id: user.id, email: user.email, name: user.name });
-
-    } catch (error) {
-        res.status(500).send('Eroare server');
-    }
-});
-
-
-router.post('/login', [
-    check('email', 'Te rog include un email valid').isEmail(),
-    check('password', 'Parola este obligatorie').exists()
-], async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
-    const { email, password } = req.body;
-
-    try {
-        const user = await User.findOne({ where: { email } });
-        if (!user) return res.status(401).send('Credentiale invalide');
-
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        if (!passwordMatch) return res.status(401).send('Credentiale invalide');
-
-        const token = jwt.sign(
-            { id: user.id, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: '1d' }
+        jwt.sign(
+            payload,
+            process.env.JWT_SECRET || 'secret_default',
+            { expiresIn: '1h' },
+            (err, token) => {
+                if (err) throw err;
+                res.json({ token, role: user.role, name: user.name, id: user.id });
+            }
         );
 
-        res.status(200).json({ token: token, id: user.id, email: user.email, name: user.name, role: user.role });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Eroare la server');
+    }
+});
 
-    } catch (error) {
+// Ruta de autentificare (Login)
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    // Validare simpla la login
+    if (!email || !password) {
+        return res.status(400).send('Email-ul si parola sunt necesare.');
+    }
+
+    try {
+        // Cautam utilizatorul dupa email
+        const user = await User.findOne({ where: { email } });
+
+        if (!user) {
+            return res.status(400).json('Email sau parola incorecta.');
+        }
+
+        // Verificam parola
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(400).json('Email sau parola incorecta.');
+        }
+
+        // Returnam token daca totul e ok
+        const payload = {
+            user: {
+                id: user.id
+            }
+        };
+
+        jwt.sign(
+            payload,
+            process.env.JWT_SECRET || 'secret_default',
+            { expiresIn: '1h' },
+            (err, token) => {
+                if (err) throw err;
+                res.json({ token, role: user.role, name: user.name, id: user.id });
+            }
+        );
+
+    } catch (err) {
+        console.error(err.message);
         res.status(500).send('Eroare server');
     }
 });
 
+// Ruta pentru actualizarea profilului
 router.put('/profile', auth, async (req, res) => {
     const { name, password, newPassword } = req.body;
 
