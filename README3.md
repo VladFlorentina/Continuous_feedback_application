@@ -1,21 +1,27 @@
 # Roadmap catre Versiunea Finala (v1.0) - Continuous Feedback App
 
-Salut! Pana acum am adus aplicatia intr-un stadiu functional foarte bun , dar pentru a o considera completa  mai am cateva lucruri importante de pus la punct.
+Salut! Aplicatia este acum functionala, testata si stabila. Urmatorul mare pas este partea vizuala.
 
-Aici este lista mea cu ce a mai ramas de facut:
+Iata ce a mai ramas de facut:
 
-## 1. Functionalitati Utilitare 
+## 1. Design si UI/UX (Prioritate Maxima)
 
-*   **Mesaje de Feedback Vizuale **
-    *   *Situatie curenta:* Cand apare o eroare (ex: parola gresita), uneori doar apare un text rosu mic sau nu se intampla nimic evident.
-    *   *Ce trebuie sa fac:* Sa implementez un sistem de notificari (toasts/snackbars) care sa apara elegant in coltul ecranului ("Salvat cu succes!", "Eroare de conexiune" etc.).
+*   **Interfata Moderna si Prietenoasa:**
+    *   *Situatie curenta:* Design-ul este functional, dar bazat pe componente standard Material UI.
+    *   *Ce trebuie sa fac:* Sa restilizez complet aplicatia. Vreau culori pale pentru calm (pasteluri), colturi rotunjite, animatii subtile si un aspect prietenos. Utilizatorii trebuie sa se simta bine cand folosesc aplicatia.
 
-## 2. Testare si Calitate
+*   **Responsive Design:**
+    *   *Ce trebuie sa fac:* Sa ma asigur ca toate elementele se aseaza perfect atat pe laptop, cat si pe telefoanele studentilor.
 
-*   **Teste Automate:**
-    *   *Ce trebuie sa fac:* Sa scriu cateva teste unitare (folosind `Jest`) pentru functiile critice din backend (login, calcul statistici). Asta ma asigura ca daca modific ceva in viitor, nu stric functionalitatile existente.
+## 3. Conformitate Academica (Documentatie)
+*   **Comentarea Codului:**
+    *   *Cerinta:* "Codul trebuie documentat cu comentarii la fiecare clasa, funcție etc."
+    *   *Actiune:* Voi readauga comentarii explicative (JSDoc) la funcțiile și componentele principale, explicând logica de business.
 
-## 4. Testare si Calitate
+## 4. Optimizari Finale (Completate)
+*   **Curatenie (Done):** Codul a fost curatat de diacritice.
 
-*   **Teste Automate:**
-    *   *Ce trebuie sa fac:* Sa scriu cateva teste unitare (folosind `Jest`) pentru functiile critice din backend (login, calcul statistici). Asta ma asigura ca daca modific ceva in viitor, nu stric functionalitatile existente.
+## 2. Lansare Publica (Deployment)
+
+*   **Web Hosting:**
+    *   *Obiectiv:* Sa urc aplicatia pe internet (ex: Render.com) astfel incat colegii si profesorii sa o poata accesa de oriunde, fara sa ruleze serverul pe calculatoarele lor.
