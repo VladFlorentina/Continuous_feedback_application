@@ -4,7 +4,12 @@ const db = require('../config/database');
 const Activity = db.Activity;
 const Feedback = db.Feedback;
 
-
+/**
+ * Verifica daca o activitate este in desfasurare bazat pe ora de start si durata.
+ * 
+ * @param {Object} activity - Obiectul activitatii din baza de date
+ * @returns {boolean} True daca activitatea este activa, False altfel
+ */
 const isActivityActive = (activity) => {
     const now = new Date();
     const start = new Date(activity.startDate);
@@ -14,9 +19,11 @@ const isActivityActive = (activity) => {
     return now >= start && now <= end;
 };
 
-
-// Ruta pentru ca un student sa se alature unei activitati
-// Verifica daca codul este valid si daca activitatea este in desfasurare
+/**
+ * @route   POST /api/join
+ * @desc    Permite unui student sa se alature unei activitati folosind un cod
+ * @access  Public
+ */
 router.post('/join', async (req, res) => {
     // Extragem codul de acces din cerere (folosind camelCase)
     const { accessCode } = req.body;
@@ -51,9 +58,11 @@ router.post('/join', async (req, res) => {
     }
 });
 
-
-// Ruta pentru trimiterea feedback-ului instant
-// Studentul trimite o emotie (feedbackType) catre o activitate (accessCode)
+/**
+ * @route   POST /api/feedback
+ * @desc    Primeste si salveaza feedback in timp real de la studenti
+ * @access  Public (necesita doar codul activitatii)
+ */
 router.post('/feedback', async (req, res) => {
     const { accessCode, feedbackType } = req.body;
 

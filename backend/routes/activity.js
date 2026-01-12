@@ -6,13 +6,19 @@ const Activity = db.Activity;
 const Feedback = db.Feedback;
 const auth = require('../middleware/auth');
 
+/**
+ * Genereaza un cod numeric aleatoriu de 6 cifre pentru accesul studentilor.
+ * @returns {string} Codul de acces generat.
+ */
 const generateAccessCode = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
-// Route pentru crearea unei activitati noi
-// Aceasta ruta este protejata si necesita autentificare
-// Returneaza detaliile activitatii create si codul QR in format base64
+/**
+ * @route   POST /api/activities
+ * @desc    Creeaza o noua activitate de feedback
+ * @access  Private (Doar Profesori)
+ */
 router.post('/', auth, async (req, res) => {
     // Extragem ID-ul profesorului din tokenul de autentificare
     const professorId = req.user.id;
@@ -31,10 +37,9 @@ router.post('/', auth, async (req, res) => {
         // -----------------------------------------------------
         // INTEGRARE SERVICIU EXTERN
         // -----------------------------------------------------
-        // Cerinta: Backend-ul acceseaza date expuse de un serviciu extern.
-        // Aici apelam api.qrserver.com pentru a obtine imaginea QR.
+        // Backend-ul acceseaza date expuse de un serviciu extern (QRServer API).
         const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${accessCode}`;
-        
+
         let qrCodeBase64 = '';
         try {
             // Facem request catre serviciul extern folosind axios
@@ -73,6 +78,11 @@ router.post('/', auth, async (req, res) => {
     }
 });
 
+/**
+ * @route   GET /api/activities
+ * @desc    Returneaza toate activitatile create de profesorul curent
+ * @access  Private
+ */
 router.get('/', auth, async (req, res) => {
     try {
         const activities = await Activity.findAll({
@@ -87,6 +97,11 @@ router.get('/', auth, async (req, res) => {
     }
 });
 
+/**
+ * @route   GET /api/activities/:id
+ * @desc    Returneaza detaliile unei activitati specifice, inclusiv feedback-ul
+ * @access  Private
+ */
 router.get('/:id', auth, async (req, res) => {
     const activityId = req.params.id;
 
