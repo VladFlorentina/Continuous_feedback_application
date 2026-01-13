@@ -3,18 +3,13 @@ const router = express.Router();
 
 /**
  * @file student.js
- * @description Rutele publice pentru interfata studentului (Join & Feedback).
+ * @description rutele publice pentru interfata studentului (join & feedback)
  */
 const db = require('../config/database');
 const Activity = db.Activity;
 const Feedback = db.Feedback;
 
-/**
- * Verifica daca o activitate este in desfasurare bazat pe ora de start si durata.
- * 
- * @param {Object} activity - Obiectul activitatii din baza de date
- * @returns {boolean} True daca activitatea este activa, False altfel
- */
+// verifica daca o activitate este activa (in desfasurare)
 const isActivityActive = (activity) => {
     const now = new Date();
     const start = new Date(activity.startDate);
@@ -24,11 +19,7 @@ const isActivityActive = (activity) => {
     return now >= start && now <= end;
 };
 
-/**
- * @route   POST /api/join
- * @desc    Permite unui student sa se alature unei activitati folosind un cod
- * @access  Public
- */
+// studetul se alatura unei activitati folosind codul de acces
 router.post('/join', async (req, res) => {
     // Extragem codul de acces din cerere (folosind camelCase)
     const { accessCode } = req.body;
@@ -63,11 +54,7 @@ router.post('/join', async (req, res) => {
     }
 });
 
-/**
- * @route   POST /api/feedback
- * @desc    Primeste si salveaza feedback in timp real de la studenti
- * @access  Public (necesita doar codul activitatii)
- */
+// primeste feedback de la student si il trimite in timp real profesorului
 router.post('/feedback', async (req, res) => {
     const { accessCode, feedbackType } = req.body;
 

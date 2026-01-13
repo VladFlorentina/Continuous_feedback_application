@@ -2,92 +2,88 @@
 
 proiect tehnologii web, ase 2025-2026.
 
-hei! aici gasesti tot ce am implementat la backend. proiectul este acum complet functional pentru faza 2.
+hei! aici gasesti documentatia pentru servicul backend. aplicatia este acum completa si pregatita pentru deployment.
 
-## 1. status proiect: functional
+## 1. functionalitati implementate
 
-am terminat implementarea si am acoperit toate cerintele: setup, orm, autentificare, plus logica pentru profesori si studenti.
+am acoperit toate cerintele proiectului, inclusiv cele suplimentare:
 
-### a. infrastructura si securitate (partea initiala)
-* server: node.js cu express.
-* baza de date: postgresql.
-* orm: sequelize (avem modelele users, activities, feedback, courses).
-* securitate: bcrypt pentru parole si jsonwebtoken (jwt) pentru login.
-* protectie: middleware care verifica token-ul pe rutele private.
+### a. arhitectura si baza de date
+* **server**: node.js cu express si socket.io pentru comunicare in timp real.
+* **baza de date**: postgresql (configurata pentru supabase, dar merge si local).
+* **orm**: sequelize pentru gestionarea modelelor (users, activities, feedback, courses).
 
-### b. functionalitati noi implementate (partea finala)
-am adaugat logica de business care lipsea data trecuta:
-* profesorii pot crea activitati noi (cu conditia sa existe un curs).
-* profesorii isi pot vedea lista de activitati si feedback-ul primit.
-* studentii se pot alatura cu un cod de acces.
-* studentii pot trimite feedback anonim (smiley, frowny etc).
+### b. functionalitati cheie
+* **autentificare si autorizare**: 
+    * jwt pentru protectia rutelor.
+    * roluri distincte: student, profesor, admin.
+* **profesor**:
+    * creeaza activitati si primeste automat un **cod qr** (generat extern).
+    * vede feedback-ul studentilor in timp real.
+* **student**:
+    * se alatura activitatii folosind un cod numeric.
+    * trimite feedback anonim (emoticoane) care apare instant pe dashboard-ul profesorului.
+* **admin**:
+    * panou special pentru gestionarea utilizatorilor.
+    * statistici globale despre aplicatie.
+* **serviciu extern**: integrare cu api-ul `qrserver.com` pentru generarea codurilor qr.
 
 ---
 
-## 2. instructiuni de instalare si rulare
+## 2. instructiuni de instalare
 
-urmeaza pasii astia ca sa pornesti serverul la tine local.
-
-### pasul 1: prerechizite
-trebuie sa ai node.js si postgresql (pgadmin) instalate.
-
-### pasul 2: instalare
-intra in folderul "backend" si scrie in terminal:
+### pasul 1: instalare dependinte
+intra in folderul `backend` si ruleaza:
+```bash
 npm install
+```
 
-### pasul 3: configurare baza de date
-1. intra in pgadmin si creeaza o baza de date goala numita "web_feedback_db".
-2. in folderul "backend", creeaza un fisier nou numit ".env" si pune codul de mai jos (schimba parola cu a ta):
+### pasul 2: configurare mediu (.env)
+creeaza un fisier `.env` in folderul `backend` cu urmatoarele variabile:
 
-DB_DIALECT=postgres
-DB_HOST=localhost
-DB_USER=postgres
-DB_PASS=parola_ta_aici
-DB_NAME=web_feedback_db
+```env
 PORT=3000
-JWT_SECRET=cheiesecratafeedbacktw
+DB_HOST=chestia_ta_de_la_supabase.supabase.co
+DB_USER=postgres
+DB_PASS=parola_ta
+DB_NAME=postgres
+DB_DIALECT=postgres
+JWT_SECRET=cheiesecrata
+```
+*nota*: daca folosesti supabase, asigura-te ca ai ssl activat (configuratia din `database.js` se ocupa de asta).
 
-### pasul 4: pornire
-tot in folderul backend, scrie comanda:
+### pasul 3: populare baza de date
+cand pornesti serverul, tabelele se creeaza automat (`sequelize.sync`).
+pentru a crea un admin initial, poti rula scriptul utilitar:
+```bash
+node create_admin.js
+```
+
+### pasul 4: pornire server
+```bash
 npm start
-
-daca apare "conexiune bd stabilita", inseamna ca serverul merge. tabelele se creeaza automat.
-
----
-
-## 3. nota importanta (citeste aici daca nu merge crearea activitatii)
-
-ca sa poti testa ruta de creare activitate (POST /api/activities), ai nevoie de un curs in baza de date, pentru ca activitatea este legata de un curs (foreign key).
-
-momentan nu avem interfata sa cream cursuri, asa ca trebuie sa inserezi unul manual.
-deschide pgadmin -> query tool pe baza ta si ruleaza asta:
-
-INSERT INTO "Courses" (name, "userId", "createdAt", "updatedAt") 
-VALUES ('Tehnologii Web', 1, NOW(), NOW());
-
-(nota: comanda asta merge doar dupa ce ti-ai facut un cont de profesor si ai id-ul 1 in tabela users).
+```
+serverul va porni pe portul 3000.
 
 ---
 
-## 4. testarea functionalitatii (dovada de lucru)
+## 3. rute api disponibile
 
-foloseste thunder client (sau postman) pentru a verifica implementarea, exact cum se cerea in ghid:
+### autentificare
+* `POST /api/auth/register` - inregistrare profesor.
+* `POST /api/auth/login` - login (returneaza token si rol).
 
-1. *inregistrare profesor:*
-   * metoda: POST
-   * url: http://localhost:3000/api/auth/register
-   * body (json): {"email": "profesor@ase.ro", "password": "parola"}
+### activitati (profesor)
+* `POST /api/activities` - creeaza activitate (genereaza cod qr).
+* `GET /api/activities` - lista activitatilor mele.
+* `GET /api/activities/:id` - detalii + feedback primit.
 
-2. *obtine token:* * la succes, primesti un token lung in raspuns. copiaza-l!
+### student (public)
+* `POST /api/join` - alaturare la activitate (valideaza cod acces).
+* `POST /api/feedback` - trimite feedback (emite eveniment socket.io).
 
-3. *test ruta protejata (creare activitate):*
-   * metoda: POST
-   * url: http://localhost:3000/api/activities
-   * header: adauga cheia x-auth-token si pune valoarea token-ului copiat anterior.
-   * body (json): {"courseId": 1, "description": "Curs Test", "startDate": "2025-12-06T10:00:00Z", "durationMinutes": 60}
-   * rezultat asteptat: status 201 created si un accessCode in raspuns.
-
-4. *test student (fara token):*
-   * metoda: POST
-   * url: http://localhost:3000/api/join
-   * body (json): {"access_code": "CODUL_PRIMIT_MAI_SUS"}
+### admin (protejat)
+* `GET /api/admin/stats` - statistici aplicatie.
+* `GET /api/admin/users` - lista utilizatori.
+* `PUT /api/admin/users/:id` - editare utilizator.
+* `DELETE /api/admin/users/:id` - stergere utilizator.

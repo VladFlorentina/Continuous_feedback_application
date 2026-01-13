@@ -11,8 +11,7 @@ require('dotenv').config();
 
 /**
  * @file index.js
- * @description Punctul de intrare al serverului backend.
- * Configureaza Express, Socket.io, middleware-urile si conexiunea la baza de date.
+ * @description punctul de intrare al serverului backend
  */
 
 // Initializarea aplicatiei Express si a serverului HTTP
@@ -55,8 +54,7 @@ app.get('/', (req, res) => {
 });
 
 /**
- * Porneste serverul si realizeaza conexiunea la baza de date.
- * Sincronizeaza modelele Sequelize cu baza de date.
+ * porneste serverul si sincronizeaza baza de date
  */
 async function startServer() {
   try {

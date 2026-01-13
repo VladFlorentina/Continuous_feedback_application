@@ -1,3 +1,6 @@
+/**
+ * script pentru crearea unui utilizator admin initial
+ */
 const bcrypt = require('bcryptjs');
 const db = require('./config/database');
 const User = db.User;

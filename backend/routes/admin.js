@@ -3,7 +3,7 @@ const router = express.Router();
 
 /**
  * @file admin.js
- * @description Rutele protejate pentru panoul de administrare (statistici, useri).
+ * @description Rutele protejate pentru panoul de administrare (statistici, useri)
  */
 const db = require('../config/database');
 const User = db.User;
@@ -13,6 +13,7 @@ const auth = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
 
 
+// Middleware pentru verificare rol de admin
 const isAdmin = async (req, res, next) => {
     try {
         if (req.user.role === 'admin') {
@@ -34,6 +35,7 @@ const isAdmin = async (req, res, next) => {
     }
 };
 
+// Returneaza statistici generale (nr. useri, activitati, feedback)
 router.get('/stats', auth, isAdmin, async (req, res) => {
     try {
         const userCount = await User.count();
@@ -64,6 +66,7 @@ router.get('/stats', auth, isAdmin, async (req, res) => {
 });
 
 
+// Returneaza lista tuturor utilizatorilor
 router.get('/users', auth, isAdmin, async (req, res) => {
     try {
         const users = await User.findAll({
@@ -77,6 +80,7 @@ router.get('/users', auth, isAdmin, async (req, res) => {
 });
 
 
+// Actualizeaza un utilizator (nume, email, rol)
 router.put('/users/:id', auth, isAdmin, async (req, res) => {
     try {
         const { name, email, role } = req.body;
@@ -105,6 +109,7 @@ router.put('/users/:id', auth, isAdmin, async (req, res) => {
 });
 
 
+// sterge un utilizator
 router.delete('/users/:id', auth, isAdmin, async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);

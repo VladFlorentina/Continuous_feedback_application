@@ -7,13 +7,13 @@ const User = db.User;
 const auth = require('../middleware/auth');
 require('dotenv').config();
 
-// Functie auxiliara pentru validarea formatului de email
+// functie auxiliara pentru validarea formatului de email
 const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
 };
 
-// Ruta de inregistrare
+// ruta de inregistrare
 router.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
 
@@ -84,7 +84,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Ruta de autentificare (Login)
+// ruta de autentificare (login)
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -131,7 +131,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Ruta pentru actualizarea profilului
+// ruta pentru actualizarea profilului
 router.put('/profile', auth, async (req, res) => {
     const { name, password, newPassword } = req.body;
 

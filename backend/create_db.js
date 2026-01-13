@@ -1,3 +1,6 @@
+/**
+ * script pentru crearea bazei de date postgresql daca nu exista
+ */
 const { Client } = require('pg');
 require('dotenv').config();
 

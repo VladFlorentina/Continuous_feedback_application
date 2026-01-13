@@ -2,13 +2,11 @@ const jwt = require('jsonwebtoken');
 
 /**
  * @file auth.js
- * @description Middleware pentru protejarea rutelor private folosind JWT.
+ * @description middleware pentru protejarea rutelor private folosind jwt
  */
 
-/**
- * Middleware care verifica validitatea token-ului JWT din header.
- * Adauga utilizatorul decodat in req.user daca token-ul este valid.
- */
+// middleware care verifica validitatea token-ului jwt din header
+// adauga utilizatorul decodat in req.user daca token-ul este valid
 const auth = (req, res, next) => {
     const token = req.header('x-auth-token');
 

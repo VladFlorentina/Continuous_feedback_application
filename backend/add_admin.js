@@ -1,3 +1,6 @@
+/**
+ * script pentru adaugarea sau actualizarea unui administrator
+ */
 const { Sequelize, DataTypes } = require('sequelize');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();

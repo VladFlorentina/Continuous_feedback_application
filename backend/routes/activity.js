@@ -6,19 +6,12 @@ const Activity = db.Activity;
 const Feedback = db.Feedback;
 const auth = require('../middleware/auth');
 
-/**
- * Genereaza un cod numeric aleatoriu de 6 cifre pentru accesul studentilor.
- * @returns {string} Codul de acces generat.
- */
+// genereaza codul de acces numeric (6 cifre)
 const generateAccessCode = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
-/**
- * @route   POST /api/activities
- * @desc    Creeaza o noua activitate de feedback
- * @access  Private (Doar Profesori)
- */
+// creeaza o activitate noua (doar profesori)
 router.post('/', auth, async (req, res) => {
     // Extragem ID-ul profesorului din tokenul de autentificare
     const professorId = req.user.id;
@@ -34,10 +27,8 @@ router.post('/', auth, async (req, res) => {
         // Generam un cod unic de acces
         let accessCode = generateAccessCode();
 
-        // -----------------------------------------------------
-        // INTEGRARE SERVICIU EXTERN
-        // -----------------------------------------------------
-        // Backend-ul acceseaza date expuse de un serviciu extern (QRServer API).
+
+        // backend-ul acceseaza date expuse de un serviciu extern (qrserver api)
         const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${accessCode}`;
 
         let qrCodeBase64 = '';
@@ -53,7 +44,7 @@ router.post('/', auth, async (req, res) => {
             qrCodeBase64 = qrApiUrl;
         }
 
-        // Salvam activitatea in baza de date folosind Sequelize (ORM)
+        // salvam activitatea in baza de date folosind sequelize (orm)
         const newActivity = await Activity.create({
             professorId,
             courseId,
@@ -63,7 +54,7 @@ router.post('/', auth, async (req, res) => {
             accessCode
         });
 
-        // Trimitem raspunsul catre client (frontend)
+        // trimitem raspunsul catre client (frontend)
         res.status(201).json({
             id: newActivity.id,
             description: newActivity.description,
@@ -78,11 +69,7 @@ router.post('/', auth, async (req, res) => {
     }
 });
 
-/**
- * @route   GET /api/activities
- * @desc    Returneaza toate activitatile create de profesorul curent
- * @access  Private
- */
+// returneaza lista activitatilor profesorului
 router.get('/', auth, async (req, res) => {
     try {
         const activities = await Activity.findAll({
@@ -97,11 +84,7 @@ router.get('/', auth, async (req, res) => {
     }
 });
 
-/**
- * @route   GET /api/activities/:id
- * @desc    Returneaza detaliile unei activitati specifice, inclusiv feedback-ul
- * @access  Private
- */
+// detalii despre o activitate specifica
 router.get('/:id', auth, async (req, res) => {
     const activityId = req.params.id;
 
