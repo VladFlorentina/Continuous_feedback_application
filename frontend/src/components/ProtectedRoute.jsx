@@ -1,3 +1,4 @@
+// componenta pentru protejarea rutelor private
 import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {

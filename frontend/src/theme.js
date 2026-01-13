@@ -1,3 +1,4 @@
+// tema personalizata pentru material ui (culori, fonturi)
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
