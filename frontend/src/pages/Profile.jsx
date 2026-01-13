@@ -14,7 +14,7 @@ const Profile = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        
+
         const storedName = localStorage.getItem('userName');
         if (storedName) {
             setFormData(prev => ({ ...prev, name: storedName }));
