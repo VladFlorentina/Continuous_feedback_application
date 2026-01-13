@@ -1,60 +1,47 @@
-# Raport de Progres - Aplicatie Feedback Continuu
+# raport de progres - aplicatie feedback continuu
 
-## 1. Introducere
-Acest document detaliaza contributiile aduse proiectului pentru a atinge stadiul final de functionalitate si stabilitate.
+## 1. introducere
+acest document detaliaza contributiile aduse proiectului pentru a atinge stadiul final de functionalitate si stabilitate. proiectul este complet.
 
-## 2. Ce am facut pana acum (Raport de Progres)
+## 2. ce am realizat (raport final)
 
-Salut! Aici este jurnalul modificarilor pe care le-am facut eu pentru a aduce proiectul la stadiul functional final.
+aici este jurnalul tuturor modificarilor facute.
 
-### Configurarea Initiala si Backend
-*   **Rezolvat problemele de dependinte:** Am avut probleme cu libraria `bcrypt` pe Windows, asa ca am inlocuit-o cu `bcryptjs`, care este mult mai stabila si nu necesita compilare nativa.
-*   **Baza de date:** Am creat un script automat (`create_db.js`) care verifica si instaleaza baza de date PostgreSQL daca aceasta nu exista.
-*   **Securitate:** Am scos toate datele sensibile (parole, secrete) din cod si le-am mutat intr-un fisier `.env`, care nu se urca pe Git.
+### infrastructura si backend (complet)
+*   **baza de date:** am implementat postgresql (via supabase) cu orm-ul sequelize. scripturile `create_db.js` si `add_admin.js` automatizeaza totul.
+*   **securitate:** parolele sunt criptate cu `bcryptjs`, autentificarea se face prin `jwt`, iar datele sensibile sunt in `.env`.
+*   **api extern:** am integrat api-ul `qrserver` pentru generarea codurilor qr.
 
-### Vizibilitate si Retea (Mobil)
-*   **Acces din retea:** Initial, serverul mergea doar pe `localhost`. Am modificat configurarea serverului Express sa asculte pe `0.0.0.0` (toate interfetele) si am updatat configuratia Vite (`vite.config.js`) cu `host: true`.
+### interfata si experienta utilizator (complet)
+*   **design unitar:** tema pastel consistent aplicata peste tot (`theme.js`).
+*   **profesor:** dashboard modern cu carduri, pagina de creare activitate simpla si statistici live detaliate (grafice recharts).
+*   **student:** interfata mobila prietenoasa, cu emoticoane mari pentru feedback rapid.
+*   **admin:** panou de control dedicat pentru gestionarea utilizatorilor.
 
-### Functionalitati Noi si UX
-*   **Notificari Vizuale (Toasts):** Am implementat `react-toastify` in toata aplicatia. Acum utilizatorul primeste feedback clar ("Succes", "Eroare") la login, register, creare activitate si logout.
-*   **Rute Protejate:** Am creat componenta `ProtectedRoute` pentru a bloca accesul neautorizat la paginile profesorilor (`/dashboard`, `/create-activity`).
-*   **Admin Tools:** Am creat scripturi automate pentru gestionarea adminilor: `add_admin.js` (creare/promovare admin) si `change_email.js` (modificare date admin).
-*   **Teste Automate:** Am configurat un mediu de testare robust folosind `Jest` si `Supertest`. Am scris primele teste de integrare pentru autentificare (Login/Register/HealthCheck).
+### calitate cod si documentatie (complet)
+*   **clean code:** am eliminat diacriticele si am standardizat comentariile (lowercase, esentiale).
+*   **documentatie tehnica:** am adaugat comentarii tip jsdoc la toate componentele importante din backend si frontend.
+*   **testare:** am verificat manual toate fluxurile (login, register, feedback real-time via socket.io).
 
-### Design si Interfata (NOU - Phase 2)
-*   **Tema Pastel:** Am creat o tema globala (`theme.js`) cu culori pastelate si prietenoase (calm blue, soft yellow) si am rotunjit toate colturile ("border-radius: 20px").
-*   **Redesign Auth:** Paginile de Login si Register sunt acum carduri elegante, centrate perfect.
-*   **Interfata Student:** Am simplificat pagina de acces si am pus butoane imense si colorate pentru feedback, ideale pentru telefon.
-*   **Dashboard Profesor:** Am transformat tabelul plictisitor intr-o grila de carduri colorate si animate.
+## 3. cum se ruleaza proiectul
 
-### Design si Curatenie Cod
-*   **Fara Diacritice si Comentarii:** Am rulat un script de curatare a codului care a eliminat toate diacriticele si comentariile inutile din surse, pentru a mentine proiectul curat si compatibil universal ("clean code").
-
-### Panou Administrator si Gestiune Roluri
-*   **Roluri Utilizatori:** Am implementat un sistem de roluri (admin, professor) in baza de date.
-*   **Dashboard Admin:** Am construit o pagina noua dedicata administratorilor (`/admin`), unde se pot vedea statistici in timp real.
-
-## 3. Cum se ruleaza proiectul acum
-
-1.  **Backend:**
+1.  **backend:**
     ```bash
     cd backend
     npm install
-    node index.js
+    npm start
     ```
-    *(Pentru teste: `npm test`)*
 
-2.  **Frontend:**
+2.  **frontend:**
     ```bash
     cd frontend
     npm install
-    npm run dev -- --host
+    npm run dev
     ```
 
-## 4. Tehnologii Adaugate de mine
-*   `react-toastify` - pentru notificari elegante.
-*   `jest` & `supertest` - pentru testare automata.
-*   `recharts` - pentru grafice.
-*   `cors` - pentru securitate.
-*   `bcryptjs` - pentru auth.
-*   `socket.io` - pentru real-time.
+## 4. tehnologii cheie adaugate
+*   `react-toastify` - notificari vizuale.
+*   `recharts` - grafice evolutie feedback.
+*   `socket.io` - comunicare in timp real.
+*   `sequelize` - management baza de date.
+*   `material ui` - componente vizuale.

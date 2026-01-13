@@ -1,27 +1,27 @@
-# Roadmap catre Versiunea Finala (v1.0) - Continuous Feedback App
+# roadmap catre versiunea finala (v1.0) - continuous feedback app
 
-Salut! Aplicatia este acum functionala, testata si stabila. Urmatorul mare pas este partea vizuala.
 
-Iata ce a mai ramas de facut:
 
-## 1. Design si UI/UX (In Progres - Aproape Gata)
+## status curent: gata de lansare (ready for deployment)
 
-*   **Interfata Moderna si Prietenoasa:**
-    *   *Realizat:* Tema globala Pastel, Login/Register Card Style, Student UI Mobile-First, Profesor Dashboard cu Carduri.
-    *   *Ce a mai ramas:* Pagina de Statistici (`ActivityDetails`) necesita aceeasi atentie la detalii (grafice cute).
+iata ce am finalizat:
 
-*   **Responsive Design:**
-    *   *Ce trebuie sa fac:* Verificare finala pe mobil.
+### 1. design si ui/ux (finalizat)
+*   [x] **interfata moderna:** tema pastel, carduri, animatii.
+*   [x] **responsive:** arata bine si pe mobil si pe desktop.
+*   [x] **grafice:** pagina `activitydetails` are grafice care se actualizeaza .
 
-## 3. Conformitate Academica (Documentatie)
-*   **Comentarea Codului:**
-    *   *Cerinta:* "Codul trebuie documentat cu comentarii la fiecare clasa, funcție etc."
-    *   *Actiune:* Voi readauga comentarii explicative (JSDoc) la funcțiile și componentele principale, explicând logica de business.
+### 2. functionalitate si backend (finalizat)
+*   [x] **roluri:** sistem complet (student, profesor, admin).
+*   [x] **socket.io:** feedback-ul apare instant pe ecranul profesorului.
+*   [x] **baza de date:** conectare stabila la supabase (cloud).
 
-## 4. Optimizari Finale (Completate)
-*   **Curatenie (Done):** Codul a fost curatat de diacritice.
+### 3. conformitate academica (finalizat)
+*  
+*   [x] **cerinte speciale:** api extern (qr) si relational db (postgresql) sunt implementate.
 
-## 2. Lansare Publica (Deployment)
 
-*   **Web Hosting:**
-    *   *Obiectiv:* Sa urc aplicatia pe internet (ex: Render.com) astfel incat colegii si profesorii sa o poata accesa de oriunde, fara sa ruleze serverul pe calculatoarele lor.
+
+## pasul urmator: deployment
+
+totul este pregatit pentru a pune site-ul pe internet.

@@ -1,52 +1,48 @@
-# aplicatie feedback - frontend (interfata)
+# aplicatie feedback - frontend
 
-acesta este folderul pentru partea de client (frontend) a aplicatiei noastre de feedback continuu. este facut cu react si vite.
+acesta este folderul pentru partea de client (frontend) a aplicatiei.
 
 ## tehnologii folosite
-* **React.js** - framework-ul principal.
-* **Vite** - pentru a crea si rula proiectul rapid.
-* **Material UI (@mui)** - librarie de componente pentru design (ca sa arate bine butoanele si formularele).
-* **Axios** - pentru a face cereri catre backend (server).
-* **React Router** - pentru navigarea intre pagini (login, dashboard, etc).
-
-## cum se instaleaza si ruleaza
-
-ca sa pornesti interfata, trebuie sa ai terminalul deschis in acest folder ("frontend") si sa urmezi pasii:
-
-### pasul 1: instalarea dependentelor
-scrie comanda asta ca sa descarci toate librariile necesare (node_modules):
-
-npm install
-
-### pasul 2: pornirea aplicatiei
-dupa ce s-a terminat instalarea, scrie comanda:
-
-npm run dev
-
-o sa iti apara un link in terminal (de obicei http://localhost:5173). dai click pe el si se deschide site-ul in browser.
-
-**nota importanta:** ca sa mearga logarea si datele, trebuie sa ai si serverul de backend pornit in alt terminal (cel de pe portul 3000).
+* **react.js** - biblioteca principala pentru interfata.
+* **vite** - build tool rapid pentru dezvoltare.
+* **material ui (@mui)** - componente gata stilizate (butoane, carduri).
+* **axios** - pentru comunicarea cu backend-ul.
+* **socket.io-client** - pentru actualizari in timp real.
+* **recharts** - pentru graficele de evolutie a feedback-ului.
 
 ## structura proiectului
+codul sursa se afla in folderul `src`:
 
-codul sursa este in folderul `src`:
+* **components/**
+    * `ProtectedRoute.jsx` - blocheaza accesul neautorizat la pagini.
+* **pages/**
+    * `Login.jsx` & `Register.jsx` - autentificare.
+    * `Profile.jsx` - setari si schimbare parola.
+    * `ProfessorDashboard.jsx` - lista activitatilor profesorului.
+    * `CreateActivity.jsx` - generare cod qr si activitate noua.
+    * `ActivityDetails.jsx` - statistici si grafice live.
+    * `StudentJoin.jsx` - studentii introduc codul aici.
+    * `StudentFeedback.jsx` - interfata de votare (emoticoane).
+    * `AdminDashboard.jsx` - panou administrare utilizatori.
+* **services/**
+    * `api.js` - configurare axios cu interceptori pentru token.
 
-* **components/** - aici nu am pus mare lucru, e pentru bucati mici de cod refolosibile.
-* **pages/** - aici sunt toate ecranele aplicatiei:
-  * `Login.jsx` si `Register.jsx` - autentificare profesor.
-  * `ProfessorDashboard.jsx` - pagina principala a profului unde vede activitatile.
-  * `CreateActivity.jsx` - formularul unde se genereaza codul de acces si QR code-ul.
-  * `ActivityDetails.jsx` - pagina unde profesorul vede in timp real voturile (se actualizeaza singura la 3 secunde).
-  * `StudentJoin.jsx` - pagina unde studentul baga codul.
-  * `StudentFeedback.jsx` - pagina cu cele 4 fete colorate pentru vot.
-* **services/** - aici e fisierul `api.js` care face legatura cu backend-ul si pune automat token-ul de login la cereri.
-* **App.jsx** - aici sunt definite rutele (cine la ce pagina duce).
+## instalare si rulare
 
-## functionalitati gata
+1. **instalare dependinte**:
+   ```bash
+   npm install
+   ```
 
-1. profesorul se poate inregistra si loga.
-2. profesorul poate crea o activitate (primeste un cod unic si un QR code generat extern).
-3. profesorul vede lista de activitati vechi.
-4. studentul intra cu codul (fara cont).
-5. studentul voteaza anonim cu emoticoane.
-6. profesorul vede voturile cum se schimba in timp real.
+2. **configurare mediu**:
+   creeaza un fisier `.env` in folderul `frontend` (langa package.json):
+   ```env
+   VITE_API_URL=http://localhost:3000/api
+   ```
+   *nota*: pentru productie (render), url-ul va fi diferit.
+
+3. **pornire aplicatie**:
+   ```bash
+   npm run dev
+   ```
+   aplicatia va rula de obicei pe `http://localhost:5173`.
