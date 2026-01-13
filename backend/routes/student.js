@@ -1,5 +1,10 @@
 const express = require('express');
 const router = express.Router();
+
+/**
+ * @file student.js
+ * @description Rutele publice pentru interfata studentului (Join & Feedback).
+ */
 const db = require('../config/database');
 const Activity = db.Activity;
 const Feedback = db.Feedback;

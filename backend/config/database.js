@@ -1,3 +1,7 @@
+/**
+ * @file database.js
+ * @description Configurarea conexiunii la baza de date PostgreSQL folosind Sequelize.
+ */
 const { Sequelize, DataTypes } = require('sequelize');
 const UserModel = require('../models/User');
 const CourseModel = require('../models/Course');
@@ -7,6 +11,8 @@ const FeedbackModel = require('../models/Feedback');
 
 require('dotenv').config();
 
+// Initializare Sequelize cu parametrii de conexiune din variabilele de mediu
+// Folosim valori default pentru fallback in caz ca nu sunt setate in .env (ex: Supabase connection string)
 const sequelize = new Sequelize(
   process.env.DB_NAME || 'postgres',
   process.env.DB_USER || 'postgres',
@@ -14,11 +20,12 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST || 'db.xkxpjnqartskkdozhfoc.supabase.co',
     dialect: process.env.DB_DIALECT || 'postgres',
-    logging: false,
+    logging: false, // Dezactivam logurile SQL in consola pentru curatenie
     dialectOptions: {
+      // Configurare SSL necesara pentru conexiunea la Supabase (si majoritatea cloud providers)
       ssl: {
         require: true,
-        rejectUnauthorized: false
+        rejectUnauthorized: false // Permitem certificate auto-semnate (comun pentru conexiuni externe)
       }
     }
   }

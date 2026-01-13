@@ -1,4 +1,9 @@
+/**
+ * @file User.js
+ * @description Modelul pentru utilizatori (Profesori/Admini).
+ */
 module.exports = (sequelize, DataTypes) => {
+  // Definirea modelului User
   const User = sequelize.define('User', {
     id: {
       type: DataTypes.INTEGER,

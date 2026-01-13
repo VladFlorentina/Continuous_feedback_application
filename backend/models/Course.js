@@ -1,4 +1,9 @@
+/**
+ * @file Course.js
+ * @description Modelul pentru cursuri.
+ */
 module.exports = (sequelize, DataTypes) => {
+  // Definirea modelului Course
   const Course = sequelize.define('Course', {
     id: {
       type: DataTypes.INTEGER,

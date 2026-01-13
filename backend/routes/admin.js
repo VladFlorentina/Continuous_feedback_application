@@ -1,5 +1,10 @@
 const express = require('express');
 const router = express.Router();
+
+/**
+ * @file admin.js
+ * @description Rutele protejate pentru panoul de administrare (statistici, useri).
+ */
 const db = require('../config/database');
 const User = db.User;
 const Activity = db.Activity;
