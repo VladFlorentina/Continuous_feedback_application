@@ -28,8 +28,10 @@ router.post('/', auth, async (req, res) => {
         let accessCode = generateAccessCode();
 
 
-        // backend-ul acceseaza date expuse de un serviciu extern (qrserver api)
-        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${accessCode}`;
+        // formam url-ul complet pentru qr code, astfel incat telefonul sa deschida aplicatia direct
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        const qrData = `${frontendUrl}/join?code=${accessCode}`;
+        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrData)}`;
 
         let qrCodeBase64 = '';
         try {

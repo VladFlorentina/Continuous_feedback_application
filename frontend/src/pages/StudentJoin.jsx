@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Container, TextField, Button, Typography, Box, Paper, Avatar } from '@mui/material';
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import api from '../services/api';
@@ -11,7 +11,8 @@ import api from '../services/api';
  * Permite introducerea codului unic de activitate pentru validare si acces.
  */
 const StudentJoin = () => {
-  const [code, setCode] = useState('');
+  const [searchParams] = useSearchParams();
+  const [code, setCode] = useState(searchParams.get('code') || '');
   const navigate = useNavigate();
 
   /**
