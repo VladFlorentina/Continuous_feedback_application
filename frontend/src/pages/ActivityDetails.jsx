@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Typography, Grid, Paper, Button, Box, Card, CardContent, Divider, IconButton, Tooltip as MuiTooltip } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -10,6 +10,36 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { io } from 'socket.io-client';
 import api from '../services/api';
+
+/**
+ * Proceseaza lista de feedback-uri bruta de la server
+ * si o grupeaza in intervale de timp pentru grafic.
+ * Functie helper definita in afara componentei pentru stabilitate.
+ * 
+ * @param {Array} feedbackList - Lista de feedback-uri
+ * @returns {Array} Datele procesate pentru Recharts
+ */
+const processTimelineData = (feedbackList) => {
+  if (!feedbackList || feedbackList.length === 0) return [];
+
+  // Sortare cronologica
+  const sortedFeedback = [...feedbackList].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+  const grouped = {};
+
+  sortedFeedback.forEach(f => {
+    const date = new Date(f.createdAt);
+    // Grupam la fiecare 10 secunde pentru a evita aglomerarea
+    const timeKey = `${date.getHours()}:${date.getMinutes()}:${Math.floor(date.getSeconds() / 10) * 10}`;
+
+    if (!grouped[timeKey]) {
+      grouped[timeKey] = { time: timeKey, smiley: 0, frowny: 0, surprised: 0, confused: 0 };
+    }
+    grouped[timeKey][f.feedbackType]++;
+  });
+
+  return Object.values(grouped);
+};
 
 /**
  * Componenta ActivityDetails
@@ -30,35 +60,6 @@ const ActivityDetails = () => {
 
   // State pentru detaliile activitatii
   const [activity, setActivity] = useState(null);
-
-  /**
-   * Proceseaza lista de feedback-uri bruta de la server
-   * si o grupeaza in intervale de timp pentru grafic.
-   * 
-   * @param {Array} feedbackList - Lista de feedback-uri
-   * @returns {Array} Datele procesate pentru Recharts
-   */
-  const processTimelineData = (feedbackList) => {
-    if (!feedbackList || feedbackList.length === 0) return [];
-
-    // Sortare cronologica
-    const sortedFeedback = [...feedbackList].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-
-    const grouped = {};
-
-    sortedFeedback.forEach(f => {
-      const date = new Date(f.createdAt);
-      // Grupam la fiecare 10 secunde pentru a evita aglomerarea
-      const timeKey = `${date.getHours()}:${date.getMinutes()}:${Math.floor(date.getSeconds() / 10) * 10}`;
-
-      if (!grouped[timeKey]) {
-        grouped[timeKey] = { time: timeKey, smiley: 0, frowny: 0, surprised: 0, confused: 0 };
-      }
-      grouped[timeKey][f.feedbackType]++;
-    });
-
-    return Object.values(grouped);
-  };
 
   /**
    * Genereaza si descarca un raport CSV cu toate feedback-urile.
@@ -90,38 +91,62 @@ const ActivityDetails = () => {
 
   /**
    * Preia datele initiale de la API
+   * Folosim useCallback pentru a preveni re-crearea functiei la fiecare render
    */
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const response = await api.get(`/activities/${id}`);
       setActivity(response.data);
 
       const newStats = { smiley: 0, frowny: 0, surprised: 0, confused: 0 };
-      response.data.feedback.forEach(f => {
-        if (newStats[f.feedbackType] !== undefined) newStats[f.feedbackType]++;
-      });
+      if (response.data.feedback) {
+        response.data.feedback.forEach(f => {
+          if (newStats[f.feedbackType] !== undefined) newStats[f.feedbackType]++;
+        });
+      }
       setStats(newStats);
 
       const timeline = processTimelineData(response.data.feedback);
       setTimelineData(timeline);
 
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching activity data:", error);
     }
-  };
+  }, [id]);
 
   // Efect pentru incarcare si conexiune WebSocket
   useEffect(() => {
+    // Incarcam datele initiale
     fetchData();
 
-    const socket = io(`http://${window.location.hostname}:3000`);
+    // Configurare Socket.IO
+    const socketURL = `http://${window.location.hostname}:3000`;
+    console.log(`Initializare conexiune socket catre: ${socketURL}`);
 
-    socket.on(`new_feedback_${id}`, () => {
-      fetchData();
+    const socket = io(socketURL, {
+      transports: ['websocket', 'polling'] // Fortam transporturile suportate
     });
 
-    return () => socket.disconnect();
-  }, [id]);
+    socket.on('connect', () => {
+      console.log('Socket conectat cu succes, ID:', socket.id);
+    });
+
+    socket.on('connect_error', (err) => {
+      console.error('Eroare conectare socket:', err);
+    });
+
+    // Ascultam evenimentul specific activitatii curente
+    socket.on(`new_feedback_${id}`, (data) => {
+      console.log('Feedback nou primit in timp real:', data);
+      fetchData(); // Reimprospatam datele
+    });
+
+    // Cleanup la demontarea componentei
+    return () => {
+      console.log('Deconectare socket...');
+      socket.disconnect();
+    };
+  }, [id, fetchData]);
 
   if (!activity) return <Box sx={{ p: 5, textAlign: 'center' }}><Typography>Se incarca datele...</Typography></Box>;
 
