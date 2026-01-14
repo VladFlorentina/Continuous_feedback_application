@@ -28,8 +28,13 @@ router.post('/', auth, async (req, res) => {
         let accessCode = generateAccessCode();
 
 
-        // formam url-ul complet pentru qr code, astfel incat telefonul sa deschida aplicatia direct
-        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        // formam url-ul complet pentru qr code
+        let frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        // eliminam slash-ul de la final daca exista, pentru a evita dublarea (//join)
+        if (frontendUrl.endsWith('/')) {
+            frontendUrl = frontendUrl.slice(0, -1);
+        }
+
         const qrData = `${frontendUrl}/join?code=${accessCode}`;
         const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrData)}`;
 
