@@ -120,7 +120,17 @@ const ActivityDetails = () => {
     fetchData();
 
     // Configurare Socket.IO
-    const socketURL = `http://${window.location.hostname}:3000`;
+    const getSocketBaseUrl = () => {
+      const envUrl = import.meta.env.VITE_API_URL;
+      if (envUrl) {
+        // Asiguram protocolul si eliminam /api daca a fost inclus in variabila de mediu
+        const url = envUrl.startsWith('http') ? envUrl : `https://${envUrl}`;
+        return url.replace(/\/api\/?$/, '');
+      }
+      return `http://${window.location.hostname}:3000`;
+    };
+
+    const socketURL = getSocketBaseUrl();
     console.log(`Initializare conexiune socket catre: ${socketURL}`);
 
     const socket = io(socketURL, {
